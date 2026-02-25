@@ -5,142 +5,283 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SF Delivery OS</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-:root {
-  --bg: #060708;
-  --surface: #0c0e13;
-  --surface2: #111420;
-  --border: #181f2e;
-  --border2: #1f2a3d;
-  --text: #dde3ef;
-  --muted3: #8896b3;
-  --orange: #f97316;
-  --orange-dim: rgba(249,115,22,0.1);
-  --orange-border: rgba(249,115,22,0.28);
-  --blue: #3b82f6;
-  --blue-dim: rgba(59,130,246,0.09);
-  --blue-border: rgba(59,130,246,0.25);
-}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { height: 100%; }
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
+  background: #ffffff;
+  color: #0f0f0f;
+  min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh;
+  padding: 40px 20px;
+  position: relative;
+  overflow: hidden;
 }
 
-.container {
-  max-width: 560px;
+/* Subtle background gradient blobs */
+body::before {
+  content: '';
+  position: fixed;
+  top: -120px;
+  right: -120px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(82,224,129,0.09) 0%, transparent 70%);
+  pointer-events: none;
+}
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -100px;
+  left: -100px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(51,112,119,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.wrap {
+  max-width: 480px;
   width: 100%;
-  padding: 40px 24px;
+  position: relative;
+  z-index: 1;
 }
 
-.wordmark {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 13px;
-  letter-spacing: 0.18em;
-  color: var(--orange);
-  margin-bottom: 12px;
-}
-
-h1 {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 48px;
+/* Badge */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: #edfaf2;
+  border: 1px solid #D2F0C6;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #194247;
   letter-spacing: 0.04em;
-  line-height: 1;
+  text-transform: uppercase;
+  margin-bottom: 28px;
+}
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  background: #52E081;
+  border-radius: 50%;
+  animation: pulse 2.5s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+/* Heading */
+.hero-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #a0a0a0;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   margin-bottom: 10px;
 }
 
-.subtitle {
-  font-size: 14px;
-  color: var(--muted3);
-  margin-bottom: 48px;
-  line-height: 1.5;
+h1 {
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+  color: #0C2226;
+  margin-bottom: 16px;
 }
 
+h1 .accent {
+  background: linear-gradient(135deg, #52E081 0%, #337077 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 15px;
+  font-weight: 400;
+  color: #6b7280;
+  line-height: 1.65;
+  margin-bottom: 44px;
+  max-width: 400px;
+}
+
+/* Cards */
 .cards {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 10px;
 }
 
 .card {
   display: flex;
   align-items: center;
-  gap: 20px;
-  padding: 22px 24px;
-  background: var(--surface);
-  border: 1px solid var(--border2);
-  border-radius: 10px;
+  gap: 16px;
+  padding: 18px 20px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
   text-decoration: none;
-  color: var(--text);
-  transition: border-color 0.15s, background 0.15s;
+  color: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  position: relative;
+  overflow: hidden;
 }
 
-.card.orange:hover { border-color: var(--orange-border); background: var(--orange-dim); }
-.card.blue:hover   { border-color: var(--blue-border);   background: var(--blue-dim); }
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+  border-radius: inherit;
+}
+
+.card.orange::before { background: linear-gradient(135deg, rgba(82,224,129,0.05) 0%, transparent 60%); }
+.card.blue::before   { background: linear-gradient(135deg, rgba(51,112,119,0.04) 0%, transparent 60%); }
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(12,34,38,0.09);
+}
+.card:hover::before { opacity: 1; }
+.card.orange:hover { border-color: #D2F0C6; }
+.card.blue:hover   { border-color: #a7c9cc; }
 
 .card-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 22px;
   flex-shrink: 0;
-  font-size: 18px;
 }
+.card.orange .card-icon { background: #edfaf2; }
+.card.blue   .card-icon { background: #eaf4f5; }
 
-.card.orange .card-icon { background: var(--orange-dim); }
-.card.blue   .card-icon { background: var(--blue-dim); }
+.card-body { flex: 1; min-width: 0; }
 
-.card-body { flex: 1; }
 .card-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
+  color: #0C2226;
   margin-bottom: 3px;
+  letter-spacing: -0.01em;
 }
+
 .card-desc {
-  font-size: 13px;
-  color: var(--muted3);
+  font-size: 12.5px;
+  color: #9ca3af;
+  line-height: 1.5;
 }
 
 .card-arrow {
-  font-size: 18px;
-  color: var(--muted3);
-  transition: transform 0.15s;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.2s;
 }
-.card:hover .card-arrow { transform: translateX(4px); color: var(--text); }
+.card-arrow svg {
+  width: 14px;
+  height: 14px;
+  color: #9ca3af;
+  transition: color 0.2s;
+}
+.card.orange:hover .card-arrow { background: #edfaf2; }
+.card.blue:hover   .card-arrow { background: #eaf4f5; }
+.card.orange:hover .card-arrow svg { color: #194247; }
+.card.blue:hover   .card-arrow svg { color: #337077; }
+.card:hover .card-arrow { transform: translateX(2px); }
 
-.footer {
-  margin-top: 48px;
-  font-family: 'IBM Plex Mono', monospace;
+/* Divider with "or" */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 2px 0;
+  color: #e5e7eb;
   font-size: 11px;
-  color: var(--muted3);
-  letter-spacing: 0.04em;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #f3f4f6;
+}
+
+/* Footer */
+.footer {
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.footer-left {
+  font-size: 11px;
+  font-weight: 500;
+  color: #d1d5db;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #d1d5db;
+  font-weight: 400;
+}
+.status-dot {
+  width: 6px;
+  height: 6px;
+  background: #52E081;
+  border-radius: 50%;
 }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="wordmark">SF DELIVERY OS</div>
-  <h1>Agentic AI<br>Delivery Suite</h1>
-  <p class="subtitle">Internal tools for SF delivery operations — workflow mapping, project ownership, and team coordination.</p>
+
+<div class="wrap">
+
+  <div class="badge">
+    <span class="badge-dot"></span>
+    Live · Sprint 3 of 8
+  </div>
+
+  <p class="hero-label">SF Delivery OS</p>
+  <h1>Your AI-powered<br><span class="accent">delivery hub</span></h1>
+  <p class="subtitle">One place to manage projects, review AI agent activity, and make the calls that move delivery forward.</p>
 
   <div class="cards">
+
     <a href="sf-owner-dashboard.html" class="card orange">
       <div class="card-icon">📊</div>
       <div class="card-body">
         <div class="card-title">Project Owner Dashboard</div>
         <div class="card-desc">Track project health, blockers, and ownership across delivery streams.</div>
       </div>
-      <div class="card-arrow">→</div>
+      <div class="card-arrow">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 8h10M9 4l4 4-4 4"/>
+        </svg>
+      </div>
     </a>
 
     <a href="sf-agent-workflow-v3.html" class="card blue">
@@ -149,11 +290,24 @@ h1 {
         <div class="card-title">Persona Workflow Map</div>
         <div class="card-desc">Visualize AI agent roles, handoffs, and delivery workflow by persona.</div>
       </div>
-      <div class="card-arrow">→</div>
+      <div class="card-arrow">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 8h10M9 4l4 4-4 4"/>
+        </svg>
+      </div>
     </a>
+
   </div>
 
-  <div class="footer">SF DELIVERY · 2026</div>
+  <div class="footer">
+    <span class="footer-left">ANZ Bank · CPQ</span>
+    <span class="footer-right">
+      <span class="status-dot"></span>
+      All agents running
+    </span>
+  </div>
+
 </div>
+
 </body>
 </html>
