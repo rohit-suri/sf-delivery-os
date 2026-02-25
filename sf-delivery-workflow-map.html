@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SF AI Delivery — Persona Workflow Map</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+
+:root {
+  --bg:#060708; --surface:#0c0e13; --surface2:#111520; --surface3:#161b28;
+  --border:#181f2e; --border2:#1f2a3d; --border3:#2a3650;
+  --text:#dde3ef; --muted:#3d4f6a; --muted2:#5a6f8f; --muted3:#8896b3;
+
+  /* Persona colors */
+  --pm:#f97316; --pm-dim:rgba(249,115,22,0.1); --pm-border:rgba(249,115,22,0.28);
+  --arch:#8b5cf6; --arch-dim:rgba(139,92,246,0.1); --arch-border:rgba(139,92,246,0.28);
+  --tl:#3b82f6; --tl-dim:rgba(59,130,246,0.1); --tl-border:rgba(59,130,246,0.28);
+  --qa:#06b6d4; --qa-dim:rgba(6,182,212,0.1); --qa-border:rgba(6,182,212,0.28);
+
+  /* Functional colors */
+  --agent:#3b82f6; --agent-dim:rgba(59,130,246,0.08); --agent-border:rgba(59,130,246,0.22);
+  --tool:#06b6d4; --tool-dim:rgba(6,182,212,0.07); --tool-border:rgba(6,182,212,0.18);
+  --output:#10b981; --output-dim:rgba(16,185,129,0.07); --output-border:rgba(16,185,129,0.2);
+  --gate:#f59e0b; --gate-dim:rgba(245,158,11,0.08); --gate-border:rgba(245,158,11,0.28);
+  --orch:#f97316;
+  --dev:#a855f7; --dev-dim:rgba(168,85,247,0.07); --dev-border:rgba(168,85,247,0.22);
+
+  --once:#a855f7; --sprint:#3b82f6; --cont:#10b981;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* ── HEADER ── */
+.header{background:linear-gradient(135deg,#0d0f12,#080b14);border-bottom:1px solid var(--border2);padding:22px 28px 18px;position:relative;overflow:hidden;}
+.header::before{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;background:radial-gradient(circle,rgba(249,115,22,0.05) 0%,transparent 70%);pointer-events:none;}
+.header::after{content:'';position:absolute;bottom:-40px;left:200px;width:200px;height:200px;background:radial-gradient(circle,rgba(59,130,246,0.04) 0%,transparent 70%);pointer-events:none;}
+.header-top{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap;}
+.h-title{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:2px;color:#fff;line-height:1;}
+.h-title span{color:var(--orch);}
+.h-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted2);margin-top:5px;letter-spacing:0.5px;}
+
+.persona-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;}
+.pchip{display:flex;align-items:center;gap:7px;padding:5px 12px;border-radius:5px;border:1px solid;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.4px;}
+.pchip-pm{background:var(--pm-dim);border-color:var(--pm-border);color:#fb923c;}
+.pchip-arch{background:var(--arch-dim);border-color:var(--arch-border);color:#c084fc;}
+.pchip-tl{background:var(--tl-dim);border-color:var(--tl-border);color:#60a5fa;}
+.pchip-qa{background:var(--qa-dim);border-color:var(--qa-border);color:#22d3ee;}
+.pchip-dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+
+/* ── LEGEND ── */
+.legend-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 28px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;}
+.leg{display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted2);}
+.leg-sq{width:9px;height:9px;border-radius:2px;flex-shrink:0;}
+.leg-div{width:1px;height:14px;background:var(--border2);margin:0 4px;}
+
+/* ── ORCHESTRATION SPINE ── */
+.orch-spine{margin:14px 20px 0;padding:11px 18px;background:linear-gradient(90deg,rgba(249,115,22,0.08),rgba(249,115,22,0.03));border:1px solid rgba(249,115,22,0.22);border-radius:9px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.orch-icon{width:36px;height:36px;background:rgba(249,115,22,0.15);border:1px solid rgba(249,115,22,0.3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
+.orch-body{flex:1;}
+.orch-body h3{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:700;color:#fb923c;letter-spacing:0.8px;text-transform:uppercase;}
+.orch-body p{font-size:11px;color:var(--muted2);margin-top:3px;line-height:1.5;}
+.orch-tools{display:flex;gap:6px;flex-wrap:wrap;}
+.otag{padding:3px 9px;border-radius:4px;background:rgba(249,115,22,0.1);color:#fdba74;font-family:'IBM Plex Mono',monospace;font-size:9px;border:1px solid rgba(249,115,22,0.2);}
+
+/* ── HOW TO READ ── */
+.how-to-read{margin:10px 20px 0;padding:8px 16px;background:rgba(59,130,246,0.05);border:1px solid rgba(59,130,246,0.18);border-radius:7px;font-size:11px;color:var(--muted2);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.how-to-read strong{color:#60a5fa;}
+
+/* ── SCROLL WRAP ── */
+.scroll{overflow-x:auto;padding-bottom:24px;}
+.table{min-width:1380px;}
+
+/* ── COLUMN HEADERS ── */
+.col-head{display:grid;grid-template-columns:180px 1fr 1fr 220px 180px 200px 170px;margin:12px 20px 0;background:var(--surface);border-radius:8px 8px 0 0;border:1px solid var(--border2);border-bottom:2px solid var(--border2);overflow:hidden;}
+.ch{padding:10px 13px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:0.9px;text-transform:uppercase;border-right:1px solid var(--border);line-height:1.5;}
+.ch:last-child{border-right:none;}
+.ch-phase{color:var(--muted2);}
+.ch-pm{color:#fb923c;background:rgba(249,115,22,0.05);}
+.ch-arch{color:#c084fc;background:rgba(139,92,246,0.04);}
+.ch-tl{color:#60a5fa;background:rgba(59,130,246,0.04);}
+.ch-agent{color:#22d3ee;background:rgba(6,182,212,0.03);}
+.ch-tools{color:var(--muted2);}
+.ch-gate{color:#fbbf24;background:rgba(245,158,11,0.03);}
+
+/* ── SECTION DIVIDERS ── */
+.sec{margin:0 20px;padding:6px 16px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.2px;text-transform:uppercase;display:flex;align-items:center;gap:8px;border-left:3px solid;}
+.sec-once{background:rgba(168,85,247,0.06);color:#c084fc;border-color:var(--once);border-top:1px solid rgba(168,85,247,0.15);}
+.sec-sprint{background:rgba(59,130,246,0.06);color:#60a5fa;border-color:var(--sprint);border-top:1px solid rgba(59,130,246,0.15);}
+.sec-cont{background:rgba(16,185,129,0.05);color:#34d399;border-color:var(--cont);border-top:1px solid rgba(16,185,129,0.15);}
+
+/* ── ROWS ── */
+.row{display:grid;grid-template-columns:180px 1fr 1fr 220px 180px 200px 170px;border-bottom:1px solid var(--border);margin:0 20px;background:var(--surface);min-height:170px;transition:background 0.12s;}
+.row:hover{background:#0e1118;}
+.row-once{border-left:3px solid var(--once);}
+.row-sprint{border-left:3px solid var(--sprint);}
+.row-cont{border-left:3px solid var(--cont);}
+
+/* ── CELLS ── */
+.phase-cell{padding:14px 12px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:5px;background:rgba(0,0,0,0.12);}
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:8px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;width:fit-content;}
+.b-once{background:rgba(168,85,247,0.15);color:#c084fc;}
+.b-sprint{background:rgba(59,130,246,0.15);color:#60a5fa;}
+.b-cont{background:rgba(16,185,129,0.15);color:#34d399;}
+.phase-name{font-size:15px;font-weight:700;color:#fff;margin-top:3px;}
+.phase-agent{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;letter-spacing:0.4px;margin-top:1px;}
+.auto-row{display:flex;gap:3px;align-items:center;margin-top:8px;}
+.adot{width:12px;height:5px;border-radius:2px;background:var(--border3);}
+.adot.on{background:currentColor;}
+.alabel{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted2);margin-left:4px;}
+.phase-note{font-size:10px;color:var(--muted);font-style:italic;margin-top:5px;line-height:1.4;}
+
+.cell{padding:11px 10px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:6px;}
+.cell:last-child{border-right:none;}
+.cell-pm{background:rgba(249,115,22,0.02);}
+.cell-arch{background:rgba(139,92,246,0.02);}
+.cell-tl{background:rgba(59,130,246,0.02);}
+.cell-agent{background:rgba(6,182,212,0.01);}
+.cell-tools{}
+.cell-gate{background:rgba(245,158,11,0.02);}
+
+/* ── CARDS ── */
+.card{border-radius:6px;padding:8px 10px;border:1px solid transparent;transition:transform 0.1s,box-shadow 0.1s;cursor:default;}
+.card:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.4);}
+.ct{font-family:'IBM Plex Mono',monospace;font-size:8px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;margin-bottom:4px;}
+.cb{font-size:11px;color:#8896b3;line-height:1.55;}
+.cb strong{color:var(--text);}
+
+.c-pm{background:var(--pm-dim);border-color:var(--pm-border);}
+.c-pm .ct{color:#fb923c;}
+.c-arch{background:var(--arch-dim);border-color:var(--arch-border);}
+.c-arch .ct{color:#c084fc;}
+.c-tl{background:var(--tl-dim);border-color:var(--tl-border);}
+.c-tl .ct{color:#60a5fa;}
+.c-qa-lead{background:var(--qa-dim);border-color:var(--qa-border);}
+.c-qa-lead .ct{color:#22d3ee;}
+.c-agent{background:var(--agent-dim);border-color:var(--agent-border);}
+.c-agent .ct{color:#60a5fa;}
+.c-tool{background:var(--tool-dim);border-color:var(--tool-border);}
+.c-tool .ct{color:#22d3ee;}
+.c-out{background:var(--output-dim);border-color:var(--output-border);}
+.c-out .ct{color:#34d399;}
+.c-gate{background:var(--gate-dim);border-color:var(--gate-border);}
+.c-gate .ct{color:#fbbf24;}
+.c-dev{background:var(--dev-dim);border-color:var(--dev-border);}
+.c-dev .ct{color:#c084fc;}
+.c-auto{background:rgba(239,68,68,0.04);border:1px dashed rgba(239,68,68,0.18);border-radius:5px;padding:6px 9px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#f87171;text-align:center;}
+
+/* Tags */
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;}
+.tag{padding:2px 7px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:9px;}
+.tg{background:rgba(16,185,129,0.12);color:#6ee7b7;}
+.tb{background:rgba(59,130,246,0.12);color:#93c5fd;}
+.tc{background:rgba(6,182,212,0.12);color:#67e8f9;}
+.tp{background:rgba(168,85,247,0.12);color:#c4b5fd;}
+.to{background:rgba(249,115,22,0.12);color:#fdba74;}
+
+/* Live feed dot */
+.live{display:inline-flex;align-items:center;gap:5px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#60a5fa;margin-top:4px;}
+.live::before{content:'';width:5px;height:5px;border-radius:50%;background:#3b82f6;animation:pulse 2s infinite;display:block;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(0.65)}}
+
+/* ── RETRO ROW ── */
+.retro-row{display:grid;grid-template-columns:180px 1fr;border-bottom:1px solid var(--border);margin:0 20px;background:rgba(59,130,246,0.03);border-left:3px solid var(--sprint);min-height:65px;}
+.retro-inner{display:flex;align-items:center;gap:10px;padding:10px 16px;flex-wrap:wrap;}
+.arr{font-size:16px;color:var(--muted);flex-shrink:0;}
+
+/* ── FOOTER ── */
+.footer{margin:16px 20px 24px;padding:14px 20px;background:var(--surface);border:1px solid var(--border2);border-radius:9px;display:flex;gap:24px;flex-wrap:wrap;}
+.fn{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted2);}
+.fn b{color:var(--orch);}
+
+/* ── PERSONA HEADER EXPLAINER ── */
+.persona-explainer{margin:14px 20px 0;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.pe{padding:10px 13px;border-radius:8px;border:1px solid;}
+.pe-pm{background:var(--pm-dim);border-color:var(--pm-border);}
+.pe-arch{background:var(--arch-dim);border-color:var(--arch-border);}
+.pe-tl{background:var(--tl-dim);border-color:var(--tl-border);}
+.pe-qa{background:var(--qa-dim);border-color:var(--qa-border);}
+.pe-role{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:4px;}
+.pe-pm .pe-role{color:#fb923c;}
+.pe-arch .pe-role{color:#c084fc;}
+.pe-tl .pe-role{color:#60a5fa;}
+.pe-qa .pe-role{color:#22d3ee;}
+.pe-desc{font-size:11px;color:var(--muted3);line-height:1.5;}
+.pe-sees{font-family:'IBM Plex Mono',monospace;font-size:9px;margin-top:5px;color:var(--muted2);}
+.pe-sees span{color:var(--text);}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="h-title">AI-Native <span>Salesforce</span> Delivery</div>
+      <div class="h-title" style="font-size:18px;color:var(--muted3);letter-spacing:1px;">Persona Workflow Map — How Every Lead Type Runs the System</div>
+      <div class="h-sub">ONE ROLE · FOUR BACKGROUNDS · SEVEN AGENTS · SINGLE ORCHESTRATION LAYER</div>
+    </div>
+  </div>
+  <div class="persona-chips">
+    <div class="pchip pchip-pm"><div class="pchip-dot"></div>PM / Programme Manager</div>
+    <div class="pchip pchip-arch"><div class="pchip-dot"></div>Salesforce Architect</div>
+    <div class="pchip pchip-tl"><div class="pchip-dot"></div>Technical Lead</div>
+    <div class="pchip pchip-qa"><div class="pchip-dot"></div>QA Lead</div>
+  </div>
+</div>
+
+<!-- ══ PERSONA EXPLAINER CARDS ══ -->
+<div class="persona-explainer">
+  <div class="pe pe-pm">
+    <div class="pe-role">🟠 PM / Programme Manager</div>
+    <div class="pe-desc">Thinks in milestones, stakeholder comms, and risk. Interacts with agents via plain-language goals and business impact summaries.</div>
+    <div class="pe-sees">Sees: <span>Business outcomes, sprint health, escalation decisions</span></div>
+  </div>
+  <div class="pe pe-arch">
+    <div class="pe-role">🟣 Salesforce Architect</div>
+    <div class="pe-desc">Thinks in data models, integration patterns, and org design. Validates architecture decisions and guardrails before agents execute.</div>
+    <div class="pe-sees">Sees: <span>ERDs, ADRs, integration maps, technical debt flags</span></div>
+  </div>
+  <div class="pe pe-tl">
+    <div class="pe-role">🔵 Technical Lead</div>
+    <div class="pe-desc">Thinks in code quality, test coverage, and delivery velocity. Reviews agent PRs and sets build thresholds and autonomy levels.</div>
+    <div class="pe-sees">Sees: <span>PRs, coverage %, PMD reports, CI pipeline status</span></div>
+  </div>
+  <div class="pe pe-qa">
+    <div class="pe-role">🩵 QA Lead</div>
+    <div class="pe-desc">Thinks in test strategy, defect severity, and release confidence. Sets pass thresholds and triages defects the QA agent surfaces.</div>
+    <div class="pe-sees">Sees: <span>Test plans, defect logs, traceability matrix, pass rates</span></div>
+  </div>
+</div>
+
+<!-- ══ LEGEND ══ -->
+<div class="legend-bar" style="margin-top:12px;">
+  <div class="leg"><div class="leg-sq" style="background:#fb923c"></div>PM Interacts</div>
+  <div class="leg"><div class="leg-sq" style="background:#c084fc"></div>Architect Interacts</div>
+  <div class="leg"><div class="leg-sq" style="background:#60a5fa"></div>TL Interacts</div>
+  <div class="leg"><div class="leg-sq" style="background:#22d3ee"></div>QA Lead Interacts</div>
+  <div class="leg-div"></div>
+  <div class="leg"><div class="leg-sq" style="background:#3b82f6;opacity:0.7"></div>Agent Executes</div>
+  <div class="leg"><div class="leg-sq" style="background:#22d3ee;opacity:0.6"></div>Tools Stack</div>
+  <div class="leg"><div class="leg-sq" style="background:#34d399;opacity:0.7"></div>Output / Artifact</div>
+  <div class="leg"><div class="leg-sq" style="background:#fbbf24;opacity:0.7"></div>Approval Gate</div>
+  <div class="leg"><div class="leg-sq" style="background:#c084fc;opacity:0.6"></div>Thin Dev (Validate Only)</div>
+  <div class="leg-div"></div>
+  <div class="leg"><div class="leg-sq" style="background:rgba(168,85,247,0.5);border:1px solid #a855f7"></div>Once-off</div>
+  <div class="leg"><div class="leg-sq" style="background:rgba(59,130,246,0.5);border:1px solid #3b82f6"></div>Sprint Loop</div>
+  <div class="leg"><div class="leg-sq" style="background:rgba(16,185,129,0.5);border:1px solid #10b981"></div>Continuous</div>
+</div>
+
+<!-- ══ ORCHESTRATION SPINE ══ -->
+<div class="orch-spine">
+  <div class="orch-icon">⚙</div>
+  <div class="orch-body">
+    <h3>Orchestration Layer — Always Running Behind Every Agent</h3>
+    <p>Routes tasks and state between agents · Triggers approval gates · Delivers decisions to the lead's dashboard in their natural language · Logs every action for audit · Manages rollback and retry · Surfaces escalations to the right persona at the right moment</p>
+  </div>
+  <div class="orch-tools">
+    <span class="otag">CrewAI / LangGraph</span>
+    <span class="otag">Temporal (state)</span>
+    <span class="otag">LangSmith (audit)</span>
+    <span class="otag">Jira MCP</span>
+    <span class="otag">GitHub MCP</span>
+    <span class="otag">Confluence MCP</span>
+    <span class="otag">Slack MCP</span>
+  </div>
+</div>
+
+<div class="how-to-read">
+  <strong>↓ HOW TO READ:</strong>
+  Each row = one project phase. The <strong style="color:#fb923c">orange</strong>, <strong style="color:#c084fc">purple</strong>, <strong style="color:#60a5fa">blue</strong>, and <strong style="color:#22d3ee">cyan</strong> columns show what each lead persona actually does — they see different views of the same agent. The <strong>Agent</strong> column shows what executes. The <strong>Gate</strong> column is where a human must sign off before the workflow advances.
+</div>
+
+<div class="scroll">
+<div class="table">
+
+<!-- COLUMN HEADERS -->
+<div class="col-head">
+  <div class="ch ch-phase">Phase / Agent<br><span style="opacity:0.5;font-size:8px">Autonomy Level</span></div>
+  <div class="ch ch-pm">🟠 PM / Programme Mgr<br><span style="opacity:0.6;font-size:8px">Business intent & risk</span></div>
+  <div class="ch ch-arch">🟣 Salesforce Architect<br><span style="opacity:0.6;font-size:8px">Technical guardrails & design</span></div>
+  <div class="ch ch-tl">🔵 Technical Lead<br><span style="opacity:0.6;font-size:8px">Code quality & delivery velocity</span></div>
+  <div class="ch ch-agent">🤖 Agent Executes<br><span style="opacity:0.6;font-size:8px">All work. All artifacts.</span></div>
+  <div class="ch">🔧 Tools Activated</div>
+  <div class="ch ch-gate">🔒 Gate + Thin Dev Role</div>
+</div>
+
+<!-- ══ ONCE-OFF ══ -->
+<div class="sec sec-once">◆ &nbsp;Once-off — Project Initiation &amp; Discovery</div>
+
+<!-- 1. DISCOVERY -->
+<div class="row row-once">
+  <div class="phase-cell">
+    <span class="badge b-once">Once-off</span>
+    <div class="phase-name">1. Discovery</div>
+    <div class="phase-agent" style="color:var(--once)">DISCOVERY AGENT</div>
+    <div class="auto-row" style="color:var(--once)">
+      <div class="adot on"></div><div class="adot on"></div><div class="adot"></div>
+      <span class="alabel">Execute + Approve</span>
+    </div>
+    <div class="phase-note">All personas upload docs and answer questions. Agent does all analysis.</div>
+  </div>
+
+  <!-- PM -->
+  <div class="cell cell-pm">
+    <div class="card c-pm"><div class="ct">▶ Activates</div><div class="cb">Uploads RFP / requirements doc in plain language. Sets project type (greenfield / migration). Answers agent's scope questions — <strong>no SF knowledge needed.</strong></div></div>
+    <div class="card c-pm"><div class="ct">Reviews</div><div class="cb">Reads a plain-English summary of extracted requirements, risk flags, and commercial assumptions. Annotates gaps conversationally.</div></div>
+  </div>
+
+  <!-- Arch -->
+  <div class="cell cell-arch">
+    <div class="card c-arch"><div class="ct">▶ Sets Constraints</div><div class="cb">Defines architecture principles upfront: declarative-first, integration patterns, excluded 3rd-party tools, existing org constraints for brownfield.</div></div>
+    <div class="card c-arch"><div class="ct">Reviews</div><div class="cb">Validates <strong>Capability Map</strong> against org reality. Checks cloud product recommendations for fit. Flags any technical assumptions the agent missed.</div></div>
+  </div>
+
+  <!-- TL -->
+  <div class="cell cell-tl">
+    <div class="card c-tl"><div class="ct">▶ Org Scan Trigger</div><div class="cb">For brownfield: initiates org metadata scan. Reviews agent's technical complexity assessment and story size rough cut.</div></div>
+    <div class="card c-tl"><div class="ct">Reviews</div><div class="cb">Validates rough story list for technical feasibility signals. Flags anything that looks like a hidden integration beast before planning begins.</div></div>
+  </div>
+
+  <!-- Agent -->
+  <div class="cell cell-agent">
+    <div class="card c-agent"><div class="ct">Executes Fully</div><div class="cb">Parses all docs · Extracts functional + non-functional reqs · Maps to SF capability areas · Identifies gaps · Recommends cloud products (Sales, Service, Data, Revenue, Agentforce) · Generates rough story list · Produces requirements register</div></div>
+    <div class="live">Feeds Planning Agent + Design Agent on Gate D1 pass</div>
+  </div>
+
+  <!-- Tools -->
+  <div class="cell cell-tools">
+    <div class="card c-tool"><div class="ct">LLM Reasoning</div><div class="cb">Claude (primary) + GPT-4o (doc parsing fallback)</div></div>
+    <div class="card c-tool"><div class="ct">Doc Connectors</div><div class="cb">Confluence MCP · SharePoint · Google Drive MCP</div></div>
+    <div class="card c-tool"><div class="ct">SF Knowledge RAG</div><div class="cb">Salesforce Docs KB · Agentforce APIs · Product catalogue</div></div>
+    <div class="card c-tool"><div class="ct">Org Scan (brownfield)</div><div class="cb">Salesforce CLI · OrgSpy / Metazoa</div></div>
+  </div>
+
+  <!-- Gate -->
+  <div class="cell cell-gate">
+    <div class="card c-gate"><div class="ct">🔒 Gate D1</div><div class="cb">PM + Client approve Requirements Register &amp; Capability Map. Blocks Planning + Design Agents from starting.</div></div>
+    <div class="c-auto">No thin dev at this gate</div>
+  </div>
+</div>
+
+<!-- 2. UX DESIGN -->
+<div class="row row-once">
+  <div class="phase-cell">
+    <span class="badge b-once">Once-off</span>
+    <div class="phase-name">2. UX Design</div>
+    <div class="phase-agent" style="color:var(--once)">UX AGENT</div>
+    <div class="auto-row" style="color:var(--once)">
+      <div class="adot on"></div><div class="adot on"></div><div class="adot"></div>
+      <span class="alabel">Execute + Approve</span>
+    </div>
+    <div class="phase-note">PM drives persona brief. Arch validates SLDS compliance. TL checks component feasibility.</div>
+  </div>
+
+  <!-- PM -->
+  <div class="cell cell-pm">
+    <div class="card c-pm"><div class="ct">▶ Persona Brief</div><div class="cb">Confirms user personas and goals in plain language. Shares brand / UX guidelines if available. Describes what success looks like for each user type.</div></div>
+    <div class="card c-pm"><div class="ct">Review &amp; Approve</div><div class="cb">Reviews journey maps and wireframes via chat — annotates by describing changes in plain language. <strong>No Figma skill needed.</strong> Approves before sprint planning locks.</div></div>
+  </div>
+
+  <!-- Arch -->
+  <div class="cell cell-arch">
+    <div class="card c-arch"><div class="ct">▶ SLDS Guardrails</div><div class="cb">Sets Lightning Design System constraints. Defines which standard SF UI patterns must be used. Flags any UX decisions that would require custom components vs. standard.</div></div>
+    <div class="card c-arch"><div class="ct">Validates</div><div class="cb">Reviews component specs against <strong>SLDS compliance</strong>. Checks that wireframes don't imply architecture-level changes not in scope.</div></div>
+  </div>
+
+  <!-- TL -->
+  <div class="cell cell-tl">
+    <div class="card c-tl"><div class="ct">▶ Feasibility Check</div><div class="cb">Reviews component spec list for build complexity. Flags any wireframe that implies a custom LWC that would need 3+ days vs. a standard record page.</div></div>
+    <div class="card c-tl"><div class="ct">Validates</div><div class="cb">Confirms each screen maps to a buildable SF component (standard vs. custom) and annotates estimates early. Catches scope creep before it hits the sprint.</div></div>
+  </div>
+
+  <!-- Agent -->
+  <div class="cell cell-agent">
+    <div class="card c-agent"><div class="ct">Executes Fully</div><div class="cb">Generates user journey maps · Screen flows per story · Lo-fi wireframes · Lightning component specs · Accessibility annotations · Draft acceptance criteria · Auto-links wireframes to Jira stories</div></div>
+    <div class="live">Auto-attaches wireframe links to every Jira story on gate pass</div>
+  </div>
+
+  <!-- Tools -->
+  <div class="cell cell-tools">
+    <div class="card c-tool"><div class="ct">Wireframe Gen</div><div class="cb">V0.dev · Figma AI plugin · Galileo AI</div></div>
+    <div class="card c-tool"><div class="ct">LLM + SLDS KB</div><div class="cb">Claude with Lightning Design System knowledge base built in</div></div>
+    <div class="card c-tool"><div class="ct">Jira MCP</div><div class="cb">Auto-creates and links wireframe attachments to stories</div></div>
+  </div>
+
+  <!-- Gate -->
+  <div class="cell cell-gate">
+    <div class="card c-gate"><div class="ct">🔒 Gate U1</div><div class="cb">PM approves wireframes. Arch signs off SLDS compliance. TL confirms component feasibility. Blocks sprint planning until all three confirm.</div></div>
+    <div class="c-auto">No thin dev at this gate</div>
+  </div>
+</div>
+
+<!-- 3. SOLUTION DESIGN -->
+<div class="row row-once" style="min-height:185px;">
+  <div class="phase-cell">
+    <span class="badge b-once">Once-off</span>
+    <div class="phase-name">3. Solution Design</div>
+    <div class="phase-agent" style="color:var(--once)">DESIGN AGENT</div>
+    <div class="auto-row" style="color:var(--once)">
+      <div class="adot on"></div><div class="adot on"></div><div class="adot"></div>
+      <span class="alabel">Execute + Approve</span>
+    </div>
+    <div class="phase-note">Highest-stakes gate. Architect owns this review. TL validates feasibility.</div>
+  </div>
+
+  <!-- PM -->
+  <div class="cell cell-pm">
+    <div class="card c-pm"><div class="ct">▶ Intent &amp; Principles</div><div class="cb">Defines business architecture principles via guided prompts: integration budget, scalability horizon, regulatory constraints. Agent translates to technical decisions.</div></div>
+    <div class="card c-pm"><div class="ct">Executive Summary</div><div class="cb">Receives TDD as an <strong>executive summary</strong> — business impact, risks, and commercial implications. Not the raw architecture doc.</div></div>
+  </div>
+
+  <!-- Arch -->
+  <div class="cell cell-arch">
+    <div class="card c-arch"><div class="ct">▶ Architecture Review</div><div class="cb">This is the Architect's primary gate. Reviews full TDD: data model, object relationships, integration architecture, security model, automation blueprint. Annotates ADRs.</div></div>
+    <div class="card c-arch"><div class="ct">Signs Off</div><div class="cb">Validates ERD against SF governor limits. Checks integration patterns. Confirms security model. <strong>This approval is mandatory</strong> — no Sprint 1 without it.</div></div>
+  </div>
+
+  <!-- TL -->
+  <div class="cell cell-tl">
+    <div class="card c-tl"><div class="ct">▶ Feasibility Pass</div><div class="cb">Reads generated TDD as a <strong>technical spec</strong>. Validates that the story breakdown and estimates are realistic. Flags any design decision that will create a build blocker.</div></div>
+    <div class="card c-tl"><div class="ct">Validates</div><div class="cb">Checks Apex usage, LWC count, Flow complexity. Identifies any stories that need thin dev consultation before Sprint 1 build begins.</div></div>
+  </div>
+
+  <!-- Agent -->
+  <div class="cell cell-agent">
+    <div class="card c-agent"><div class="ct">Executes Fully</div><div class="cb">Designs data model &amp; ERD · Object relationships · Automation blueprint · Integration architecture · Security model · ADRs · Technical story breakdown with estimates · Auto-populates Confluence TDD + Jira epics</div></div>
+    <div class="live">Auto-populates Confluence TDD page + Jira tech backlog</div>
+  </div>
+
+  <!-- Tools -->
+  <div class="cell cell-tools">
+    <div class="card c-tool"><div class="ct">Data Modelling</div><div class="cb">dbdiagram.io · Mermaid ERD via Claude</div></div>
+    <div class="card c-tool"><div class="ct">Diagram Gen</div><div class="cb">Mermaid.js auto-rendered from LLM reasoning</div></div>
+    <div class="card c-tool"><div class="ct">Confluence MCP</div><div class="cb">Auto-writes TDD page with ADR sub-pages</div></div>
+    <div class="card c-tool"><div class="ct">Org Scan</div><div class="cb">SF CLI · Metazoa (brownfield metadata analysis)</div></div>
+  </div>
+
+  <!-- Gate -->
+  <div class="cell cell-gate">
+    <div class="card c-gate"><div class="ct">🔒 Gate S1</div><div class="cb">PM approves intent + risk. Architect approves TDD. Blocks Sprint 1 planning absolutely.</div></div>
+    <div class="card c-dev"><div class="ct">🔬 Thin Dev: Feasibility</div><div class="cb">Reads generated TDD. Flags technical blockers only. Does NOT redesign — sends flags back to agent for rework.</div></div>
+  </div>
+</div>
+
+<!-- ══ SPRINT LOOP ══ -->
+<div class="sec sec-sprint">↻ &nbsp;Sprint Loop — Repeats every 2 weeks · Planning Agent is the conductor</div>
+
+<!-- 4. SPRINT PLANNING -->
+<div class="row row-sprint" style="min-height:175px;">
+  <div class="phase-cell">
+    <span class="badge b-sprint">Sprint Loop</span>
+    <div class="phase-name">4. Sprint Planning</div>
+    <div class="phase-agent" style="color:var(--agent)">PLANNING AGENT</div>
+    <div class="auto-row" style="color:var(--agent)">
+      <div class="adot on"></div><div class="adot on"></div><div class="adot"></div>
+      <span class="alabel">Execute + Approve</span>
+    </div>
+    <div class="phase-note">Central conductor. Activates &amp; sequences all sprint agents.</div>
+  </div>
+
+  <!-- PM -->
+  <div class="cell cell-pm">
+    <div class="card c-pm"><div class="ct">▶ Sprint Goal</div><div class="cb">States sprint goal in plain language. Confirms team capacity. Flags any business priority shifts or client-requested changes.</div></div>
+    <div class="card c-pm"><div class="ct">One-Click Approve</div><div class="cb">Reviews sprint board as a <strong>business impact summary</strong> — what will be delivered, what's at risk. Approves or reorders priorities via plain-text commands.</div></div>
+  </div>
+
+  <!-- Arch -->
+  <div class="cell cell-arch">
+    <div class="card c-arch"><div class="ct">▶ Technical Review</div><div class="cb">Reviews stories for alignment with TDD. Ensures no story implies scope creep into a different architecture pattern. Validates that dependencies are correctly sequenced.</div></div>
+    <div class="card c-arch"><div class="ct">Confirms</div><div class="cb">Signs off that sprint backlog stories are architecturally coherent and that the sequencing won't create integration debt mid-sprint.</div></div>
+  </div>
+
+  <!-- TL -->
+  <div class="cell cell-tl">
+    <div class="card c-tl"><div class="ct">▶ Estimate Review</div><div class="cb">Reviews agent-generated story point estimates. Adjusts autonomy levels for this sprint based on story complexity. Sets build thresholds for Gate B1.</div></div>
+    <div class="card c-tl"><div class="ct">Validates</div><div class="cb">Confirms story breakdown is granular enough for Build Agent to execute autonomously. Flags any story that needs a thin dev consultation upfront.</div></div>
+  </div>
+
+  <!-- Agent -->
+  <div class="cell cell-agent">
+    <div class="card c-agent"><div class="ct">Orchestrates</div><div class="cb">Pulls stories from backlog · Refines against TDD + wireframes · Breaks epics to tasks · Estimates complexity · Sequences Build + QA agents · Creates sprint board · Assigns stories · Maps dependencies</div></div>
+    <div class="live">Context: TDD + Wireframes + Previous sprint velocity + Retro learnings</div>
+  </div>
+
+  <!-- Tools -->
+  <div class="cell cell-tools">
+    <div class="card c-tool"><div class="ct">Jira MCP</div><div class="cb">Auto-creates epics, stories, tasks, AC, links, dependency maps</div></div>
+    <div class="card c-tool"><div class="ct">Estimation RAG</div><div class="cb">Claude reasoning + historical velocity from past sprints</div></div>
+    <div class="card c-tool"><div class="ct">Azure DevOps MCP</div><div class="cb">Alternative work management connector</div></div>
+  </div>
+
+  <!-- Gate -->
+  <div class="cell cell-gate">
+    <div class="card c-gate"><div class="ct">🔒 Gate P1</div><div class="cb">PM approves sprint goal. TL confirms estimates + autonomy config. Every story must have AC + wireframe link + design ref. Unlocks Build Agent.</div></div>
+    <div class="c-auto">No thin dev at this gate</div>
+  </div>
+</div>
+
+<!-- 5. BUILD -->
+<div class="row row-sprint" style="min-height:195px;">
+  <div class="phase-cell">
+    <span class="badge b-sprint">Sprint Loop</span>
+    <div class="phase-name">5. Build</div>
+    <div class="phase-agent" style="color:var(--agent)">BUILD AGENT</div>
+    <div class="auto-row" style="color:var(--agent)">
+      <div class="adot on"></div><div class="adot on"></div><div class="adot on"></div>
+      <span class="alabel">High Autonomy</span>
+    </div>
+    <div class="phase-note">Highest autonomy phase. Thin dev reviews PRs. Lead monitors via dashboard only.</div>
+  </div>
+
+  <!-- PM -->
+  <div class="cell cell-pm">
+    <div class="card c-pm"><div class="ct">▶ Monitor Dashboard</div><div class="cb">Watches build health dashboard: stories in progress, blockers, ETA. Sees business-level status — not raw code. Intervenes only on <strong>escalated business decisions.</strong></div></div>
+    <div class="card c-pm"><div class="ct">Escalation Decisions</div><div class="cb">Agent surfaces critical decisions in plain English: "Should we include Email-to-Case in this sprint or push to Sprint 4?" PM answers; agent implements.</div></div>
+  </div>
+
+  <!-- Arch -->
+  <div class="cell cell-arch">
+    <div class="card c-arch"><div class="ct">▶ Architecture Decisions</div><div class="cb">Agent escalates integration and pattern decisions: "Platform Events or CDC for ERP sync?" Architect answers; agent logs as ADR and implements.</div></div>
+    <div class="card c-arch"><div class="ct">ADR Review</div><div class="cb">Reviews any Architecture Decision Records the agent auto-generates during build. Ensures technical debt is captured and logged in Confluence.</div></div>
+  </div>
+
+  <!-- TL -->
+  <div class="cell cell-tl">
+    <div class="card c-tl"><div class="ct">▶ PR Oversight</div><div class="cb">Reviews all <strong>flagged PRs</strong> the Build Agent raises. Approves or requests changes — agent auto-addresses and re-submits. TL does NOT write code.</div></div>
+    <div class="card c-tl"><div class="ct">Quality Gates</div><div class="cb">Monitors coverage %, PMD violations, ESLint issues via live dashboard. Adjusts autonomy level mid-sprint if build quality degrades.</div></div>
+  </div>
+
+  <!-- Agent -->
+  <div class="cell cell-agent">
+    <div class="card c-agent"><div class="ct">Executes Fully</div><div class="cb">Generates Apex · LWC components · Flows &amp; automation · Config metadata · Validation rules · Writes + runs unit tests · Updates Jira automatically · Creates PRs · Self-reviews with PMD · Iterates on failures autonomously · Auto-provisions scratch orgs per story</div></div>
+    <div class="live">1 scratch org per story · Auto-PR on completion · Self-retries on test failures</div>
+  </div>
+
+  <!-- Tools -->
+  <div class="cell cell-tools">
+    <div class="card c-tool"><div class="ct">Code Gen</div><div class="cb">Claude Code · Cursor (Apex + LWC specialist modes)</div></div>
+    <div class="card c-tool"><div class="ct">Version Control</div><div class="cb">GitHub / GitLab + Salesforce CLI (sfdx)</div></div>
+    <div class="card c-tool"><div class="ct">Static Analysis</div><div class="cb">PMD Apex rules · ESLint LWC · every commit</div></div>
+    <div class="card c-tool"><div class="ct">Scratch Orgs</div><div class="cb">SF Dev Hub · auto-provisioned per story · torn down post-merge</div></div>
+  </div>
+
+  <!-- Gate -->
+  <div class="cell cell-gate">
+    <div class="card c-gate"><div class="ct">🔒 Gate B1</div><div class="cb">Coverage ≥75% · PMD pass · CI green. Auto-triggers QA Agent on pass.</div></div>
+    <div class="card c-dev"><div class="ct">🔬 Thin Dev: PR Review</div><div class="cb">Reviews all generated PRs for quality + risk. Comments → agent auto-addresses + re-submits. Never writes code. SLA: same-day review.</div></div>
+  </div>
+</div>
+
+<!-- 6. QA & TESTING -->
+<div class="row row-sprint" style="min-height:185px;">
+  <div class="phase-cell">
+    <span class="badge b-sprint">Sprint Loop</span>
+    <div class="phase-name">6. QA &amp; Testing</div>
+    <div class="phase-agent" style="color:var(--agent)">QA AGENT</div>
+    <div class="auto-row" style="color:var(--agent)">
+      <div class="adot on"></div><div class="adot on"></div><div class="adot on"></div>
+      <span class="alabel">Mostly Auto</span>
+    </div>
+    <div class="phase-note">QA Lead sets thresholds and triages. Agent tests, logs defects, and retests autonomously.</div>
+  </div>
+
+  <!-- PM -->
+  <div class="cell cell-pm">
+    <div class="card c-pm"><div class="ct">▶ Risk Framing</div><div class="cb">Marks high-risk stories in <strong>business terms</strong> ("this is client-facing and goes live on Monday"). Agent translates to test depth and coverage thresholds automatically.</div></div>
+    <div class="card c-pm"><div class="ct">Defect Triage</div><div class="cb">Reviews QA dashboard in plain English. Decides: fix this sprint vs next vs accept risk. PM makes the call on <strong>business risk</strong>; QA Lead owns technical severity.</div></div>
+  </div>
+
+  <!-- Arch -->
+  <div class="cell cell-arch">
+    <div class="card c-arch"><div class="ct">▶ Integration Test Review</div><div class="cb">Reviews test coverage for integration points and data model edge cases. Ensures agent-generated tests cover governor limit scenarios and bulk data patterns.</div></div>
+    <div class="card c-arch"><div class="ct">Validates</div><div class="cb">Signs off that integration and security model tests are included in the regression suite before gate approval.</div></div>
+  </div>
+
+  <!-- TL / QA Lead -->
+  <div class="cell cell-tl">
+    <div class="card c-qa-lead"><div class="ct">▶ QA Lead: Set Thresholds</div><div class="cb">Defines pass rate targets, coverage thresholds, P1/P2 severity criteria. Configures regression suite depth for this sprint.</div></div>
+    <div class="card c-qa-lead"><div class="ct">Defect Severity Triage</div><div class="cb">Triages any agent-flagged defects the Build Agent can't auto-resolve after 2 retry cycles. Provides root cause direction — agent implements fix.</div></div>
+  </div>
+
+  <!-- Agent -->
+  <div class="cell cell-agent">
+    <div class="card c-agent"><div class="ct">Executes Fully</div><div class="cb">Generates test cases from AC · Runs functional tests · Runs regression suite · Logs bugs in Jira automatically · Auto-retests after Build Agent fixes · Builds traceability matrix · QA summary report</div></div>
+    <div class="live">Auto-loops with Build Agent on defect cycles · No human step for L1/L2 defects</div>
+  </div>
+
+  <!-- Tools -->
+  <div class="cell cell-tools">
+    <div class="card c-tool"><div class="ct">SF-Native Test Auto</div><div class="cb">Provar · TestIM (Salesforce UI + functional)</div></div>
+    <div class="card c-tool"><div class="ct">Test Case Gen</div><div class="cb">Claude generates test cases from Acceptance Criteria automatically</div></div>
+    <div class="card c-tool"><div class="ct">Defect Management</div><div class="cb">Jira MCP — auto-creates bug tickets with steps, screenshots, env</div></div>
+  </div>
+
+  <!-- Gate -->
+  <div class="cell cell-gate">
+    <div class="card c-gate"><div class="ct">🔒 Gate Q1</div><div class="cb">Zero P1/P2 open. Pass rate ≥95%. QA Lead + PM approve before Deploy Agent activates.</div></div>
+    <div class="card c-dev"><div class="ct">🔬 Thin Dev: L3 Defects Only</div><div class="cb">Called in only when Build Agent can't resolve after 2 retries. Root cause diagnosis only — agent implements fix.</div></div>
+  </div>
+</div>
+
+<!-- 7. DEPLOYMENT -->
+<div class="row row-sprint" style="min-height:185px;">
+  <div class="phase-cell">
+    <span class="badge b-sprint">Sprint Loop</span>
+    <div class="phase-name">7. Deployment</div>
+    <div class="phase-agent" style="color:var(--agent)">DEPLOY AGENT</div>
+    <div class="auto-row" style="color:var(--agent)">
+      <div class="adot on"></div><div class="adot on"></div><div class="adot"></div>
+      <span class="alabel">Execute + Approve</span>
+    </div>
+    <div class="phase-note">UAT → Production. 2-person approval for Prod. Auto-rollback within 15 min if health fails.</div>
+  </div>
+
+  <!-- PM -->
+  <div class="cell cell-pm">
+    <div class="card c-pm"><div class="ct">▶ Release Approval</div><div class="cb">Reviews plain-English change summary: what's going live, what changes for users, what the rollback plan is. <strong>No CLI or DevOps knowledge needed.</strong> One-click UAT push.</div></div>
+    <div class="card c-pm"><div class="ct">Production Sign-off</div><div class="cb">Co-signs Production release with Client (2-person rule). Monitors deployment health dashboard. Confirms rollback or accept on anomaly.</div></div>
+  </div>
+
+  <!-- Arch -->
+  <div class="cell cell-arch">
+    <div class="card c-arch"><div class="ct">▶ Deployment Plan Review</div><div class="cb">Reviews deployment package components against TDD. Validates that metadata changes won't conflict with existing org configuration or managed packages.</div></div>
+    <div class="card c-arch"><div class="ct">Post-Deploy Validation</div><div class="cb">Reviews post-deploy health check results. Confirms integration points are functioning as designed. Signs off within 15-min auto-rollback window.</div></div>
+  </div>
+
+  <!-- TL -->
+  <div class="cell cell-tl">
+    <div class="card c-tl"><div class="ct">▶ CI Pipeline Review</div><div class="cb">Confirms CI pipeline is green. Reviews deployment package diff. Validates that scratch org test results translate to target org conditions.</div></div>
+    <div class="card c-tl"><div class="ct">Prod Incident On-Call</div><div class="cb">On-call only if auto-rollback is insufficient and a production incident requires diagnosis. Provides root cause — agent deploys fix.</div></div>
+  </div>
+
+  <!-- Agent -->
+  <div class="cell cell-agent">
+    <div class="card c-agent"><div class="ct">Executes Fully</div><div class="cb">Builds deployment package · Validates against target org · Deploys to UAT · Runs smoke tests · Awaits UAT gate · Deploys to Prod · Post-deploy validation · Generates release notes · Monitors health for 15 min · Auto-rollback on failure</div></div>
+    <div class="live">Auto-rollback if health check fails within 15 min of Production deploy</div>
+  </div>
+
+  <!-- Tools -->
+  <div class="cell cell-tools">
+    <div class="card c-tool"><div class="ct">SF Release Mgmt</div><div class="cb">Copado / Gearset — SF-native CI/CD with org comparison</div></div>
+    <div class="card c-tool"><div class="ct">CI/CD Pipeline</div><div class="cb">GitHub Actions + Salesforce CLI deploy commands</div></div>
+    <div class="card c-tool"><div class="ct">Post-Deploy Monitor</div><div class="cb">SF Event Monitoring · Splunk / Datadog anomaly detection</div></div>
+  </div>
+
+  <!-- Gate -->
+  <div class="cell cell-gate">
+    <div class="card c-gate"><div class="ct">🔒 Gate D2</div><div class="cb">UAT: PM + Client. Production: 2-person rule. Auto-rollback if health check fails within 15 min post-deploy.</div></div>
+    <div class="card c-dev"><div class="ct">🔬 Thin Dev: Prod Incident</div><div class="cb">On-call for Prod incidents only. Provides root cause — agent deploys the fix. SLA: 1hr response for P1.</div></div>
+  </div>
+</div>
+
+<!-- RETRO ROW -->
+<div class="retro-row">
+  <div class="phase-cell" style="justify-content:center;">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#60a5fa;font-weight:700;">↻ SPRINT END</div>
+    <div style="font-size:11px;font-weight:700;margin-top:2px;">Retro + Loop</div>
+  </div>
+  <div class="retro-inner">
+    <div class="card c-pm" style="flex:1;min-width:190px;padding:9px 12px;">
+      <div class="ct">PM Runs Retro</div>
+      <div class="cb">Adds qualitative notes on team dynamics, client satisfaction, delivery risks. Approves autonomy level changes for next sprint.</div>
+    </div>
+    <div class="arr">→</div>
+    <div class="card c-arch" style="flex:1;min-width:190px;padding:9px 12px;">
+      <div class="ct">Arch Reviews Tech Debt</div>
+      <div class="cb">Reviews any ADRs logged mid-sprint. Flags tech debt that should become backlog stories before next sprint planning.</div>
+    </div>
+    <div class="arr">→</div>
+    <div class="card c-agent" style="flex:1;min-width:190px;padding:9px 12px;">
+      <div class="ct">Planning Agent Reactivates</div>
+      <div class="cb">Auto-generates sprint summary. Applies retro learnings to next estimates. Adjusts autonomy. Sprint cycle restarts at Gate P1.</div>
+    </div>
+    <div class="arr">→</div>
+    <div class="card c-gate" style="flex:1;min-width:160px;padding:9px 12px;">
+      <div class="ct">Support Agent Feeds Back</div>
+      <div class="cb">Post-deploy incidents become backlog candidates for next sprint — automatically surfaced to Planning Agent.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CONTINUOUS ══ -->
+<div class="sec sec-cont">◈ &nbsp;Continuous — Post Go-Live Operations</div>
+
+<!-- 8. SUPPORT & OPS -->
+<div class="row row-cont">
+  <div class="phase-cell">
+    <span class="badge b-cont">Continuous</span>
+    <div class="phase-name">8. Support &amp; Ops</div>
+    <div class="phase-agent" style="color:var(--cont)">SUPPORT AGENT</div>
+    <div class="auto-row" style="color:var(--cont)">
+      <div class="adot on"></div><div class="adot on"></div><div class="adot on"></div>
+      <span class="alabel">High Autonomy</span>
+    </div>
+    <div class="phase-note">Always-on. P1s escalate to PM immediately. Patterns feed back into the next sprint cycle.</div>
+  </div>
+
+  <!-- PM -->
+  <div class="cell cell-pm">
+    <div class="card c-pm"><div class="ct">▶ Configure SLAs</div><div class="cb">Sets escalation thresholds via guided setup. Defines what auto-resolves vs. escalates to PM. Owns the client relationship and SLA commitments.</div></div>
+    <div class="card c-pm"><div class="ct">Weekly Trend Review</div><div class="cb">Reviews support trend dashboard in plain English. Decides which patterns become backlog stories. PM judges <strong>business impact</strong>; agent sizes the work.</div></div>
+  </div>
+
+  <!-- Arch -->
+  <div class="cell cell-arch">
+    <div class="card c-arch"><div class="ct">▶ Org Health Review</div><div class="cb">Reviews weekly org health report: governor limit trends, performance degradation, integration error patterns. Flags systemic issues that need architectural remediation.</div></div>
+    <div class="card c-arch"><div class="ct">Validates</div><div class="cb">Confirms any remediation approach the Support Agent proposes is architecturally sound before implementation.</div></div>
+  </div>
+
+  <!-- TL / QA -->
+  <div class="cell cell-tl">
+    <div class="card c-tl"><div class="ct">▶ L3 Incident Response</div><div class="cb">Engaged on L3 incidents the agent can't diagnose after 2 autonomous retry cycles. Provides root cause — agent patches and deploys fix. SLA: 4hr response.</div></div>
+    <div class="card c-tl"><div class="ct">Regression Update</div><div class="cb">Reviews agent-suggested additions to the regression suite based on incident patterns. Approves or rejects additions.</div></div>
+  </div>
+
+  <!-- Agent -->
+  <div class="cell cell-agent">
+    <div class="card c-agent"><div class="ct">Manages Fully</div><div class="cb">Monitors org health continuously · Triages incidents · Auto-resolves L1/L2 · Files L3 bug reports · Maintains KB · Detects recurring patterns · Feeds incident trends to Planning Agent as backlog candidates</div></div>
+    <div class="live">Always-on · Feeds Planning Agent continuously · P1 escalation: immediate</div>
+  </div>
+
+  <!-- Tools -->
+  <div class="cell cell-tools">
+    <div class="card c-tool"><div class="ct">SF-Native</div><div class="cb">Agentforce · Einstein Bots · Service Cloud for L1 auto-resolution</div></div>
+    <div class="card c-tool"><div class="ct">Org Monitoring</div><div class="cb">SF Event Monitoring · Shield · Health Check API · Governor Limit alerts</div></div>
+    <div class="card c-tool"><div class="ct">Ticketing</div><div class="cb">Jira Service Management / ServiceNow MCP</div></div>
+  </div>
+
+  <!-- Gate -->
+  <div class="cell cell-gate">
+    <div class="card c-gate"><div class="ct">🔒 Gate SU1</div><div class="cb">P1 incidents: immediate escalation to PM. Pattern analysis reviewed weekly before adding to sprint backlog.</div></div>
+    <div class="card c-dev"><div class="ct">🔬 Thin Dev: L3 Only</div><div class="cb">Engaged on L3 incidents agent can't diagnose. Root cause only — agent deploys fix. SLA: 4hr for P1.</div></div>
+  </div>
+</div>
+
+</div><!-- .table -->
+</div><!-- .scroll -->
+
+<!-- ══ FOOTER ══ -->
+<div class="footer">
+  <div class="fn"><b>GATE SEQUENCE:</b> D1 → U1 → S1 (once-off) · Per sprint: P1 → B1 → Q1 → D2 · SU1 (continuous)</div>
+  <div class="fn"><b>PERSONA RULE:</b> PM sees business impact · Architect sees technical design · TL sees code quality · QA Lead sees test confidence. Same agent, four views.</div>
+  <div class="fn"><b>THIN DEV RULE:</b> Validates only. Never initiates. Never writes. Engaged at Gates S1 (feasibility), B1 (PR review), Q1 (L3 defect), D2 (Prod incident), SU1 (L3 ops).</div>
+  <div class="fn"><b>AUTONOMY:</b> Execute+Approve (Once-off phases) · High Autonomy (Build, QA, Support) · Configurable per sprint complexity at kickoff.</div>
+  <div class="fn"><b>KEY DISTINCTION:</b> This is not developers using AI tools. This is a senior lead directing an AI delivery team. The lead brings judgment; agents bring execution.</div>
+</div>
+
+</body>
+</html>
