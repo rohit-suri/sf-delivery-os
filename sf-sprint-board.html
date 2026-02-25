@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SF Delivery OS — Sprint Board</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg: #f6f3ef;
+  --surface: #ffffff;
+  --surface2: #f4faf6;
+  --border: #ede8e0;
+  --border2: #e2dbd0;
+  --border3: #d4cdc0;
+  --text: #0C2226;
+  --muted: #4a6e66;
+  --muted2: #1e4a44;
+  --muted3: #2a4a44;
+
+  --green: #52E081;
+  --green-dim: #edfaf2;
+  --green-border: #D2F0C6;
+  --teal: #194247;
+  --teal-dim: #edfaf2;
+  --teal-border: #D2F0C6;
+  --ocean: #337077;
+  --ocean-dim: #eaf4f5;
+  --ocean-border: #b3d4d7;
+  --carbon: #0C2226;
+
+  --red: #dc2626;
+  --red-dim: #fef2f2;
+  --red-border: #fca5a5;
+  --amber: #d97706;
+  --amber-dim: #fffbeb;
+  --amber-border: #fde68a;
+  --purple: #7c3aed;
+  --purple-dim: #f5f3ff;
+  --purple-border: #ddd6fe;
+
+  --nav-w: 224px;
+  --col-todo: #f9f7f4;
+  --col-prog: #f0faf5;
+  --col-review: #eaf4f5;
+  --col-done: #f4faf6;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; display: flex; }
+
+/* ── SIDEBAR (shared) ── */
+.nav {
+  width: var(--nav-w); min-height: 100vh; background: var(--surface);
+  border-right: 1.5px solid var(--border); display: flex; flex-direction: column;
+  flex-shrink: 0; z-index: 10; box-shadow: var(--shadow-sm);
+}
+.nav-logo { padding: 18px 16px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.nav-logo-icon { width: 32px; height: 32px; background: var(--teal-dim); border: 1.5px solid var(--teal-border); border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+.nav-logo-text { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: -0.01em; color: var(--text); line-height: 1; }
+.nav-logo-sub { font-family: 'Inter', sans-serif; font-size: 10px; color: var(--muted2); margin-top: 2px; }
+.nav-project { margin: 12px 10px; padding: 10px 12px; background: var(--teal-dim); border: 1.5px solid var(--teal-border); border-radius: 10px; }
+.np-label { font-size: 9px; font-weight: 600; color: var(--teal); letter-spacing: 0.06em; text-transform: uppercase; }
+.np-name { font-size: 12px; font-weight: 600; color: var(--text); margin-top: 3px; line-height: 1.3; }
+.np-meta { font-size: 11px; color: var(--muted3); margin-top: 4px; }
+.np-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; background: #D2F0C6; border-radius: 20px; color: #194247; font-size: 10px; font-weight: 600; margin-top: 6px; }
+.np-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #52E081; animation: blink 2s infinite; display: block; }
+.nav-section { padding: 12px 14px 4px; font-size: 10px; font-weight: 600; color: var(--muted2); letter-spacing: 0.06em; text-transform: uppercase; }
+.nav-item { display: flex; align-items: center; gap: 9px; padding: 8px 12px; margin: 1px 8px; border-radius: 8px; cursor: pointer; font-size: 13px; color: var(--muted3); transition: all 0.12s; border: 1.5px solid transparent; }
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.active { background: var(--teal-dim); border-color: var(--teal-border); color: var(--teal); font-weight: 600; }
+.nav-item-icon { font-size: 14px; flex-shrink: 0; width: 18px; text-align: center; }
+.nav-item-badge { margin-left: auto; padding: 2px 7px; border-radius: 20px; background: #fee2e2; color: #dc2626; font-size: 10px; font-weight: 600; }
+.nav-item-badge.green { background: #D2F0C6; color: #194247; }
+.nav-item-badge.amber { background: #fef3c7; color: #d97706; }
+.nav-owner { margin-top: auto; padding: 14px 12px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.nav-owner-avatar { width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg, #194247, #0C2226); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.nav-owner-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.nav-owner-role { font-size: 11px; color: var(--teal); font-weight: 500; }
+
+/* ── MAIN ── */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+.topbar { height: 52px; border-bottom: 1.5px solid var(--border); background: var(--surface); display: flex; align-items: center; padding: 0 20px; gap: 16px; flex-shrink: 0; box-shadow: var(--shadow-sm); }
+.topbar-title { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: -0.01em; color: var(--text); }
+.topbar-breadcrumb { font-size: 12px; color: var(--muted2); }
+.topbar-breadcrumb span { color: var(--teal); font-weight: 500; }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+.topbar-btn { padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; border: 1.5px solid; transition: all 0.12s; font-family: 'DM Sans', sans-serif; }
+.btn-ghost { background: transparent; border-color: var(--border2); color: var(--muted3); }
+.btn-ghost:hover { border-color: var(--border3); color: var(--text); background: var(--surface2); }
+.btn-primary { background: var(--teal); border-color: var(--teal); color: #fff; font-weight: 600; }
+.btn-primary:hover { background: var(--carbon); border-color: var(--carbon); }
+
+/* ── SPRINT HEADER BAR ── */
+.sprint-header {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 14px 20px; display: flex; align-items: center; gap: 24px; flex-shrink: 0;
+}
+.sprint-title-block { flex-shrink: 0; }
+.sprint-label { font-size: 10px; font-weight: 600; color: var(--muted2); letter-spacing: 0.06em; text-transform: uppercase; }
+.sprint-name { font-family: 'Inter', sans-serif; font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -0.02em; margin-top: 1px; }
+.sprint-goal { font-size: 12px; color: var(--muted3); margin-top: 2px; }
+
+.sprint-meta { display: flex; gap: 20px; align-items: center; }
+.sprint-stat { text-align: center; }
+.ss-val { font-family: 'Inter', sans-serif; font-size: 20px; font-weight: 700; color: var(--text); line-height: 1; }
+.ss-val.green { color: #194247; }
+.ss-val.amber { color: var(--amber); }
+.ss-label { font-size: 10px; font-weight: 500; color: var(--muted2); margin-top: 2px; }
+
+.sprint-progress-block { flex: 1; max-width: 320px; }
+.spb-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.spb-label { font-size: 11px; font-weight: 600; color: var(--muted3); }
+.spb-pct { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; color: #194247; }
+.progress-track { height: 8px; background: var(--border2); border-radius: 6px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 6px; background: linear-gradient(90deg, #52E081, #194247); transition: width 0.6s ease; }
+.spb-sub { display: flex; justify-content: space-between; margin-top: 5px; font-size: 10px; color: var(--muted2); }
+
+.sprint-days { flex-shrink: 0; text-align: right; }
+.sd-val { font-family: 'Inter', sans-serif; font-size: 22px; font-weight: 800; color: var(--text); line-height: 1; }
+.sd-label { font-size: 10px; font-weight: 500; color: var(--muted2); margin-top: 1px; }
+.sd-dates { font-size: 10px; color: var(--muted3); margin-top: 3px; }
+
+/* ── BOARD ── */
+.board-wrap { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+
+.board-filters {
+  padding: 10px 20px; background: var(--surface2); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 10px;
+}
+.filter-label { font-size: 11px; font-weight: 600; color: var(--muted2); }
+.filter-chip {
+  padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 500;
+  border: 1.5px solid var(--border2); background: var(--surface); color: var(--muted3);
+  cursor: pointer; transition: all 0.12s;
+}
+.filter-chip.active { background: var(--teal-dim); border-color: var(--teal-border); color: var(--teal); font-weight: 600; }
+.filter-chip:hover:not(.active) { border-color: var(--border3); color: var(--text); }
+.filter-sep { width: 1px; height: 20px; background: var(--border2); }
+.assignee-filter { display: flex; align-items: center; gap: 6px; margin-left: auto; font-size: 11px; color: var(--muted2); }
+.avatar-sm { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; border: 1.5px solid; cursor: pointer; transition: opacity 0.12s; }
+.avatar-sm:hover { opacity: 0.75; }
+
+.board-cols { flex: 1; overflow-x: auto; overflow-y: hidden; display: flex; gap: 0; padding: 16px 20px; gap: 12px; }
+
+/* ── COLUMN ── */
+.col {
+  flex: 0 0 260px; display: flex; flex-direction: column; border-radius: 14px;
+  background: var(--surface); border: 1.5px solid var(--border); overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.col-header {
+  padding: 12px 14px 10px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px;
+}
+.col-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.col-name { font-size: 12px; font-weight: 700; color: var(--text); flex: 1; letter-spacing: -0.01em; }
+.col-count { font-size: 11px; font-weight: 600; color: var(--muted2); background: var(--surface2); padding: 2px 8px; border-radius: 20px; }
+.col-pts { font-size: 10px; font-weight: 500; color: var(--muted2); margin-left: 2px; }
+
+.col-cards { flex: 1; overflow-y: auto; padding: 10px 10px; display: flex; flex-direction: column; gap: 8px; }
+.col-cards::-webkit-scrollbar { width: 3px; }
+.col-cards::-webkit-scrollbar-thumb { background: var(--border3); border-radius: 2px; }
+
+/* ── STORY CARD ── */
+.card {
+  background: var(--surface); border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 12px 12px 10px; cursor: pointer; transition: box-shadow 0.15s, transform 0.15s, border-color 0.15s;
+  position: relative;
+}
+.card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); border-color: var(--border3); }
+.card.blocked { border-color: var(--red-border); background: #fffafa; }
+.card.blocked:hover { border-color: #f87171; }
+
+.card-top { display: flex; align-items: center; gap: 6px; margin-bottom: 7px; }
+.story-id { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600; color: var(--muted2); }
+.story-type { font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.04em; }
+.type-feature { background: var(--ocean-dim); color: var(--ocean); }
+.type-bug { background: var(--red-dim); color: var(--red); }
+.type-config { background: var(--purple-dim); color: var(--purple); }
+.type-automation { background: var(--amber-dim); color: var(--amber); }
+.blocker-flag { margin-left: auto; font-size: 10px; font-weight: 700; color: var(--red); background: var(--red-dim); padding: 2px 7px; border-radius: 20px; }
+
+.card-title { font-size: 13px; font-weight: 600; color: var(--text); line-height: 1.4; margin-bottom: 8px; }
+.card-desc { font-size: 11px; color: var(--muted3); line-height: 1.5; margin-bottom: 10px; }
+
+.card-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.ctag { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; }
+.ctag-apex { background: #fef3c7; color: #92400e; }
+.ctag-lwc  { background: var(--ocean-dim); color: var(--ocean); }
+.ctag-flow { background: var(--purple-dim); color: #6d28d9; }
+.ctag-api  { background: #ecfeff; color: #0e7490; }
+.ctag-config { background: var(--green-dim); color: #194247; }
+
+.card-footer { display: flex; align-items: center; gap: 8px; }
+.assignee { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted3); font-weight: 500; }
+.assignee-dot { width: 20px; height: 20px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; flex-shrink: 0; }
+.a-agent { background: var(--ocean-dim); color: var(--ocean); border: 1px solid var(--ocean-border); }
+.a-dev   { background: var(--purple-dim); color: var(--purple); border: 1px solid var(--purple-border); }
+.a-owner { background: var(--teal-dim); color: var(--teal); border: 1px solid var(--teal-border); }
+
+.card-pts { margin-left: auto; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; color: var(--muted2); background: var(--surface2); padding: 2px 8px; border-radius: 20px; }
+
+.pr-chip { display: flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px; }
+.pr-open   { background: var(--ocean-dim); color: var(--ocean); }
+.pr-merged { background: var(--green-dim); color: #194247; }
+.pr-review { background: var(--purple-dim); color: var(--purple); }
+.pr-chip::before { content: '⎇'; font-size: 9px; }
+
+/* Column colour accents */
+.col-todo   .col-header { background: #fdfcfb; }
+.col-prog   .col-header { background: #f5fbf7; }
+.col-review .col-header { background: #f0f8f9; }
+.col-done   .col-header { background: #f5fbf7; }
+
+.col-todo   .col-dot { background: var(--border3); }
+.col-prog   .col-dot { background: var(--green); animation: blink 2s infinite; }
+.col-review .col-dot { background: var(--ocean); }
+.col-done   .col-dot { background: #194247; }
+
+/* Done cards are slightly faded */
+.col-done .card { opacity: 0.8; }
+.col-done .card:hover { opacity: 1; }
+.col-done .card-title { text-decoration: line-through; text-decoration-color: #b3d4d7; }
+
+/* ── BURNDOWN MINI-CHART ── */
+.burndown-bar { flex-shrink: 0; width: 220px; background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px; padding: 14px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 10px; }
+.bd-title { font-size: 11px; font-weight: 700; color: var(--text); }
+.bd-subtitle { font-size: 10px; color: var(--muted2); margin-top: 1px; }
+.bd-chart { position: relative; height: 80px; background: var(--surface2); border-radius: 8px; overflow: hidden; }
+.bd-ideal { position: absolute; top: 8px; left: 8px; right: 8px; bottom: 8px; }
+.bd-ideal line, .bd-actual polyline { stroke-linecap: round; stroke-linejoin: round; }
+.bd-legend { display: flex; gap: 12px; }
+.bd-leg { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--muted2); }
+.bd-leg-line { width: 16px; height: 2px; border-radius: 2px; }
+.bd-stats { display: flex; flex-direction: column; gap: 6px; }
+.bd-row { display: flex; justify-content: space-between; align-items: center; }
+.bd-row-label { font-size: 11px; color: var(--muted3); }
+.bd-row-val { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; color: var(--text); }
+.bd-row-val.green { color: #194247; }
+.bd-row-val.amber { color: var(--amber); }
+
+@keyframes blink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.3; transform: scale(0.7); }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══ -->
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="nav-logo-icon">⚙</div>
+    <div>
+      <div class="nav-logo-text">SF DELIVERY OS</div>
+      <div class="nav-logo-sub">Agent Orchestration</div>
+    </div>
+  </div>
+
+  <div class="nav-project">
+    <div class="np-label">Active Project</div>
+    <div class="np-name">ANZ Bank — Sales Cloud + CPQ</div>
+    <div class="np-meta">Sprint 3 of 8 · 8 days left</div>
+    <div class="np-badge">● LIVE</div>
+  </div>
+
+  <div class="nav-section">Delivery</div>
+  <a href="sf-owner-dashboard.html" class="nav-item" style="text-decoration:none;"><span class="nav-item-icon">⌂</span> Command Centre <span class="nav-item-badge amber">2</span></a>
+  <div class="nav-item"><span class="nav-item-icon">◎</span> Phase Agents</div>
+  <a href="sf-sprint-board.html" class="nav-item active" style="text-decoration:none;"><span class="nav-item-icon">☰</span> Sprint Board <span class="nav-item-badge green">12</span></a>
+  <div class="nav-item"><span class="nav-item-icon">⬡</span> Artifacts</div>
+  <div class="nav-item"><span class="nav-item-icon">✓</span> Gates & Approvals <span class="nav-item-badge">1</span></div>
+
+  <div class="nav-section">Project</div>
+  <div class="nav-item"><span class="nav-item-icon">⚡</span> Escalations <span class="nav-item-badge">2</span></div>
+  <div class="nav-item"><span class="nav-item-icon">◈</span> Autonomy Config</div>
+  <div class="nav-item"><span class="nav-item-icon">↻</span> Audit Log</div>
+
+  <div class="nav-section">Portfolio</div>
+  <div class="nav-item"><span class="nav-item-icon">◫</span> All Projects</div>
+  <div class="nav-item"><span class="nav-item-icon">◷</span> Thin Dev Roster</div>
+
+  <div class="nav-owner">
+    <div class="nav-owner-avatar">RS</div>
+    <div>
+      <div class="nav-owner-name">Rohit S.</div>
+      <div class="nav-owner-role">Project Owner</div>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ MAIN ══ -->
+<div class="main">
+
+  <!-- Top bar -->
+  <div class="topbar">
+    <div class="topbar-title">Sprint Board</div>
+    <div class="topbar-breadcrumb">ANZ Bank <span>/ Sprint 3</span> / Build Phase</div>
+    <div class="topbar-right">
+      <button class="topbar-btn btn-ghost">⬡ Sync Jira</button>
+      <button class="topbar-btn btn-ghost">⎇ GitHub</button>
+      <button class="topbar-btn btn-primary">+ Add Story</button>
+    </div>
+  </div>
+
+  <!-- Sprint summary header -->
+  <div class="sprint-header">
+    <div class="sprint-title-block">
+      <div class="sprint-label">Current Sprint</div>
+      <div class="sprint-name">Sprint 3 of 8</div>
+      <div class="sprint-goal">Goal: CPQ Quote Builder + Account Hierarchy</div>
+    </div>
+
+    <div class="sprint-meta">
+      <div class="sprint-stat">
+        <div class="ss-val green">5</div>
+        <div class="ss-label">Done</div>
+      </div>
+      <div class="sprint-stat">
+        <div class="ss-val" style="color:#337077;">3</div>
+        <div class="ss-label">In Progress</div>
+      </div>
+      <div class="sprint-stat">
+        <div class="ss-val amber">1</div>
+        <div class="ss-label">Blocked</div>
+      </div>
+      <div class="sprint-stat">
+        <div class="ss-val">8</div>
+        <div class="ss-label">Total</div>
+      </div>
+    </div>
+
+    <div class="sprint-progress-block">
+      <div class="spb-top">
+        <span class="spb-label">Sprint Progress</span>
+        <span class="spb-pct">42 / 65 pts</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" style="width: 65%;"></div></div>
+      <div class="spb-sub"><span>Day 6 of 14</span><span>65% complete</span></div>
+    </div>
+
+    <div class="sprint-days">
+      <div class="sd-val">8</div>
+      <div class="sd-label">Days Remaining</div>
+      <div class="sd-dates">14 Mar – 28 Mar 2026</div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="board-filters">
+    <span class="filter-label">Filter:</span>
+    <div class="filter-chip active">All Stories</div>
+    <div class="filter-chip">🤖 Agent Built</div>
+    <div class="filter-chip">👤 Thin Dev Review</div>
+    <div class="filter-chip">🔴 Blocked</div>
+    <div class="filter-sep"></div>
+    <div class="filter-chip">Apex / LWC</div>
+    <div class="filter-chip">Flows</div>
+    <div class="filter-chip">Config</div>
+    <div class="assignee-filter">
+      Assignee:
+      <div class="avatar-sm a-agent" title="Build Agent">AI</div>
+      <div class="avatar-sm a-dev" title="Priya K. (Thin Dev)">PK</div>
+      <div class="avatar-sm a-owner" title="Rohit S. (Owner)">RS</div>
+    </div>
+  </div>
+
+  <!-- Board columns + burndown -->
+  <div class="board-wrap">
+    <div class="board-cols">
+
+      <!-- TO DO -->
+      <div class="col col-todo">
+        <div class="col-header">
+          <div class="col-dot"></div>
+          <div class="col-name">To Do</div>
+          <div class="col-count">1</div>
+          <div class="col-pts">13 pts</div>
+        </div>
+        <div class="col-cards">
+
+          <div class="card blocked">
+            <div class="card-top">
+              <span class="story-id">SF-352</span>
+              <span class="story-type type-feature">Feature</span>
+              <span class="blocker-flag">⚠ Blocked</span>
+            </div>
+            <div class="card-title">Custom Pricing Engine — Multi-tier Discount Matrix</div>
+            <div class="card-desc">Declarative approach won't handle complex discount tiers. Awaiting owner decision: Apex batch vs restructured Flow.</div>
+            <div class="card-tags">
+              <span class="ctag ctag-apex">Apex Batch</span>
+              <span class="ctag ctag-api">CPQ API</span>
+            </div>
+            <div class="card-footer">
+              <div class="assignee">
+                <div class="assignee-dot a-agent">AI</div>
+                Build Agent
+              </div>
+              <div class="card-pts">13</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- IN PROGRESS -->
+      <div class="col col-prog">
+        <div class="col-header">
+          <div class="col-dot"></div>
+          <div class="col-name">In Progress</div>
+          <div class="col-count">3</div>
+          <div class="col-pts">23 pts</div>
+        </div>
+        <div class="col-cards">
+
+          <div class="card">
+            <div class="card-top">
+              <span class="story-id">SF-344</span>
+              <span class="story-type type-feature">Feature</span>
+            </div>
+            <div class="card-title">CPQ Quote Builder Flow — Platform Events ERP Sync</div>
+            <div class="card-desc">Implementing Platform Events for sub-second quote status sync to ERP. ADR-12 logged.</div>
+            <div class="card-tags">
+              <span class="ctag ctag-flow">Flow</span>
+              <span class="ctag ctag-apex">Apex</span>
+              <span class="ctag ctag-api">Platform Events</span>
+            </div>
+            <div class="card-footer">
+              <div class="assignee">
+                <div class="assignee-dot a-agent">AI</div>
+                Build Agent
+              </div>
+              <div class="card-pts">8</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-top">
+              <span class="story-id">SF-348</span>
+              <span class="story-type type-feature">Feature</span>
+            </div>
+            <div class="card-title">CPQ Quote Line Editor — Inline Editing LWC</div>
+            <div class="card-desc">Lightning Web Component for inline quote line editing with real-time pricing recalculation.</div>
+            <div class="card-tags">
+              <span class="ctag ctag-lwc">LWC</span>
+              <span class="ctag ctag-apex">Apex</span>
+            </div>
+            <div class="card-footer">
+              <div class="assignee">
+                <div class="assignee-dot a-agent">AI</div>
+                Build Agent
+              </div>
+              <div class="card-pts">8</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-top">
+              <span class="story-id">SF-349</span>
+              <span class="story-type type-config">Config</span>
+            </div>
+            <div class="card-title">Sales Cloud — Account Sharing Rules & Territory Model</div>
+            <div class="card-desc">Configure OWD, sharing rules, and territory hierarchy to match ANZ's regional structure.</div>
+            <div class="card-tags">
+              <span class="ctag ctag-config">Sharing Rules</span>
+              <span class="ctag ctag-config">Territory</span>
+            </div>
+            <div class="card-footer">
+              <div class="assignee">
+                <div class="assignee-dot a-agent">AI</div>
+                Build Agent
+              </div>
+              <div class="card-pts">5</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- IN REVIEW -->
+      <div class="col col-review">
+        <div class="col-header">
+          <div class="col-dot"></div>
+          <div class="col-name">In Review</div>
+          <div class="col-count">2</div>
+          <div class="col-pts">18 pts</div>
+        </div>
+        <div class="col-cards">
+
+          <div class="card">
+            <div class="card-top">
+              <span class="story-id">SF-350</span>
+              <span class="story-type type-automation">Automation</span>
+            </div>
+            <div class="card-title">Opportunity Stage Validation Rule & Automated Alerts</div>
+            <div class="card-desc">Validation rules preventing stage regression + Process Builder alerts to sales managers on close date slip.</div>
+            <div class="card-tags">
+              <span class="ctag ctag-apex">Apex</span>
+              <span class="ctag ctag-flow">Flow</span>
+            </div>
+            <div class="card-footer">
+              <div class="assignee">
+                <div class="assignee-dot a-dev">PK</div>
+                Priya K.
+              </div>
+              <span class="pr-chip pr-review">PR #53</span>
+              <div class="card-pts">13</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-top">
+              <span class="story-id">SF-345</span>
+              <span class="story-type type-feature">Feature</span>
+            </div>
+            <div class="card-title">Contact Relationship Mapping — Custom Junction Object</div>
+            <div class="card-desc">Junction object to model many-to-many relationships between Contacts and Accounts for ANZ hierarchy.</div>
+            <div class="card-tags">
+              <span class="ctag ctag-config">Data Model</span>
+              <span class="ctag ctag-lwc">LWC</span>
+            </div>
+            <div class="card-footer">
+              <div class="assignee">
+                <div class="assignee-dot a-dev">PK</div>
+                Priya K.
+              </div>
+              <span class="pr-chip pr-review">PR #51</span>
+              <div class="card-pts">5</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- DONE -->
+      <div class="col col-done">
+        <div class="col-header">
+          <div class="col-dot"></div>
+          <div class="col-name">Done</div>
+          <div class="col-count">5</div>
+          <div class="col-pts">42 pts ✓</div>
+        </div>
+        <div class="col-cards">
+
+          <div class="card">
+            <div class="card-top">
+              <span class="story-id">SF-341</span>
+              <span class="story-type type-feature">Feature</span>
+            </div>
+            <div class="card-title">Account Hierarchy Tree — LWC Component</div>
+            <div class="card-desc">Interactive hierarchy viewer with collapse/expand, search, and drill-down to child accounts.</div>
+            <div class="card-tags"><span class="ctag ctag-lwc">LWC</span></div>
+            <div class="card-footer">
+              <div class="assignee"><div class="assignee-dot a-dev">PK</div>Priya K.</div>
+              <span class="pr-chip pr-merged">PR #47</span>
+              <div class="card-pts">8</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-top">
+              <span class="story-id">SF-342</span>
+              <span class="story-type type-config">Config</span>
+            </div>
+            <div class="card-title">CPQ Product Catalogue — Price Books & Discount Schedules</div>
+            <div class="card-desc">Standard + custom price books configured. Discount schedule rules applied per product family.</div>
+            <div class="card-tags"><span class="ctag ctag-config">CPQ Config</span></div>
+            <div class="card-footer">
+              <div class="assignee"><div class="assignee-dot a-agent">AI</div>Build Agent</div>
+              <span class="pr-chip pr-merged">PR #44</span>
+              <div class="card-pts">5</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-top">
+              <span class="story-id">SF-343</span>
+              <span class="story-type type-automation">Automation</span>
+            </div>
+            <div class="card-title">Lead Assignment Rules — Round Robin by Region</div>
+            <div class="card-desc">Auto-assignment flow routing new leads to BDMs by ANZ region using custom metadata.</div>
+            <div class="card-tags"><span class="ctag ctag-flow">Flow</span><span class="ctag ctag-config">Metadata</span></div>
+            <div class="card-footer">
+              <div class="assignee"><div class="assignee-dot a-agent">AI</div>Build Agent</div>
+              <span class="pr-chip pr-merged">PR #45</span>
+              <div class="card-pts">5</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-top">
+              <span class="story-id">SF-346</span>
+              <span class="story-type type-feature">Feature</span>
+            </div>
+            <div class="card-title">Opportunity Close Plan — Guided Selling Path</div>
+            <div class="card-desc">Path component with stage-gated entry criteria and next-step prompts for sales reps.</div>
+            <div class="card-tags"><span class="ctag ctag-flow">Flow</span><span class="ctag ctag-lwc">LWC</span></div>
+            <div class="card-footer">
+              <div class="assignee"><div class="assignee-dot a-dev">PK</div>Priya K.</div>
+              <span class="pr-chip pr-merged">PR #48</span>
+              <div class="card-pts">13</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-top">
+              <span class="story-id">SF-347</span>
+              <span class="story-type type-config">Config</span>
+            </div>
+            <div class="card-title">Account Record Page — Dynamic Layout by Segment</div>
+            <div class="card-desc">Lightning App Builder pages with visibility rules per account segment (Retail, SME, Corporate).</div>
+            <div class="card-tags"><span class="ctag ctag-config">App Builder</span></div>
+            <div class="card-footer">
+              <div class="assignee"><div class="assignee-dot a-agent">AI</div>Build Agent</div>
+              <span class="pr-chip pr-merged">PR #49</span>
+              <div class="card-pts">5</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- BURNDOWN SIDEBAR -->
+      <div class="burndown-bar">
+        <div>
+          <div class="bd-title">Burndown</div>
+          <div class="bd-subtitle">Sprint 3 · 65 pts total</div>
+        </div>
+
+        <div class="bd-chart">
+          <svg width="100%" height="100%" viewBox="0 0 196 80" preserveAspectRatio="none">
+            <!-- grid lines -->
+            <line x1="0" y1="20" x2="196" y2="20" stroke="#e2dbd0" stroke-width="0.5"/>
+            <line x1="0" y1="40" x2="196" y2="40" stroke="#e2dbd0" stroke-width="0.5"/>
+            <line x1="0" y1="60" x2="196" y2="60" stroke="#e2dbd0" stroke-width="0.5"/>
+            <!-- ideal burndown (straight line from top-left to bottom-right) -->
+            <line x1="8" y1="8" x2="188" y2="72" stroke="#D2F0C6" stroke-width="2" stroke-dasharray="5,3"/>
+            <!-- actual burndown (ahead of ideal through day 6) -->
+            <polyline
+              points="8,8 28,16 48,26 68,34 88,36 108,40 128,42"
+              fill="none" stroke="#194247" stroke-width="2.5"/>
+            <!-- today dot -->
+            <circle cx="128" cy="42" r="4" fill="#52E081" stroke="#fff" stroke-width="1.5"/>
+          </svg>
+        </div>
+
+        <div class="bd-legend">
+          <div class="bd-leg"><div class="bd-leg-line" style="background:#D2F0C6;border:1px dashed #9dd69b;"></div>Ideal</div>
+          <div class="bd-leg"><div class="bd-leg-line" style="background:#194247;"></div>Actual</div>
+        </div>
+
+        <div class="bd-stats">
+          <div class="bd-row">
+            <span class="bd-row-label">Pts burned</span>
+            <span class="bd-row-val green">42 / 65</span>
+          </div>
+          <div class="bd-row">
+            <span class="bd-row-label">Remaining</span>
+            <span class="bd-row-val amber">23 pts</span>
+          </div>
+          <div class="bd-row">
+            <span class="bd-row-label">Velocity (S2)</span>
+            <span class="bd-row-val">58 pts</span>
+          </div>
+          <div class="bd-row">
+            <span class="bd-row-label">On track</span>
+            <span class="bd-row-val green">✓ Yes</span>
+          </div>
+          <div class="bd-row">
+            <span class="bd-row-label">PRs merged</span>
+            <span class="bd-row-val">5 / 10</span>
+          </div>
+          <div class="bd-row">
+            <span class="bd-row-label">Coverage avg</span>
+            <span class="bd-row-val green">81%</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
