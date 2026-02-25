@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Native SF Delivery — Project Owner View</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+  :root {
+    --bg:#070809;--surface:#0d0f12;--surface2:#131720;--border:#1a1f2e;--border2:#242c3d;
+    --text:#dde3ef;--muted:#4a5568;--muted2:#6b7a99;
+    --owner:#f97316;--owner-dim:rgba(249,115,22,0.12);--owner-border:rgba(249,115,22,0.3);
+    --agent:#3b82f6;--agent-dim:rgba(59,130,246,0.09);--agent-border:rgba(59,130,246,0.25);
+    --tool:#06b6d4;--tool-dim:rgba(6,182,212,0.07);--tool-border:rgba(6,182,212,0.2);
+    --output:#10b981;--output-dim:rgba(16,185,129,0.07);--output-border:rgba(16,185,129,0.2);
+    --gate:#f59e0b;--gate-dim:rgba(245,158,11,0.08);--gate-border:rgba(245,158,11,0.28);
+    --dev:#8b5cf6;--dev-dim:rgba(139,92,246,0.08);--dev-border:rgba(139,92,246,0.25);
+    --once:#a855f7;--sprint:#3b82f6;--cont:#10b981;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+  .top-banner{background:linear-gradient(135deg,#0d0f12 0%,#0a0d16 100%);border-bottom:1px solid var(--border2);padding:20px 28px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;flex-wrap:wrap;position:relative;overflow:hidden;}
+  .top-banner::before{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;background:radial-gradient(circle,rgba(249,115,22,0.06) 0%,transparent 70%);pointer-events:none;}
+  .banner-left h1{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1.5px;color:#fff;line-height:1;}
+  .banner-left h1 span{color:var(--owner);}
+  .banner-left p{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted2);margin-top:5px;letter-spacing:0.5px;}
+  .owner-insight{background:var(--owner-dim);border:1px solid var(--owner-border);border-radius:10px;padding:10px 16px;max-width:480px;display:flex;gap:10px;align-items:flex-start;}
+  .oi-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+  .oi-title{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;color:var(--owner);letter-spacing:0.6px;text-transform:uppercase;}
+  .oi-body{font-size:12px;color:var(--muted2);margin-top:3px;line-height:1.5;}
+  .oi-body strong{color:var(--text);}
+  .legend-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:8px 28px;display:flex;gap:20px;flex-wrap:wrap;align-items:center;}
+  .leg{display:flex;align-items:center;gap:6px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted2);}
+  .leg-dot{width:9px;height:9px;border-radius:2px;flex-shrink:0;}
+  .orch-bar{margin:12px 20px;padding:10px 16px;background:linear-gradient(90deg,rgba(249,115,22,0.07) 0%,rgba(249,115,22,0.03) 100%);border:1px solid rgba(249,115,22,0.22);border-radius:8px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .orch-icon{width:34px;height:34px;background:rgba(249,115,22,0.15);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+  .orch-text h3{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;color:#fb923c;letter-spacing:0.8px;text-transform:uppercase;}
+  .orch-text p{font-size:11px;color:var(--muted2);margin-top:2px;}
+  .orch-tags{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;}
+  .otag{padding:3px 9px;border-radius:4px;background:rgba(249,115,22,0.1);color:#fdba74;font-family:'IBM Plex Mono',monospace;font-size:9px;border:1px solid rgba(249,115,22,0.2);}
+  .scroll-wrap{overflow-x:auto;padding-bottom:20px;}
+  .workflow{min-width:1160px;}
+  .col-head{display:grid;grid-template-columns:200px 220px 1fr 200px 220px 180px;border-bottom:2px solid var(--border2);margin:0 20px;background:var(--surface);border-radius:8px 8px 0 0;overflow:hidden;}
+  .ch{padding:10px 14px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;border-right:1px solid var(--border);line-height:1.4;}
+  .ch:last-child{border-right:none;}
+  .ch-owner{color:var(--owner);background:rgba(249,115,22,0.05);}
+  .ch-agent{color:var(--agent);background:rgba(59,130,246,0.04);}
+  .ch-dev{color:var(--dev);background:rgba(139,92,246,0.04);}
+  .sec-div{margin:0 20px;padding:6px 16px;font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1.2px;text-transform:uppercase;display:flex;align-items:center;gap:8px;border-left:3px solid transparent;}
+  .sd-once{background:rgba(168,85,247,0.06);color:#c084fc;border-color:var(--once);border-top:1px solid rgba(168,85,247,0.2);}
+  .sd-sprint{background:rgba(59,130,246,0.06);color:#60a5fa;border-color:var(--sprint);border-top:1px solid rgba(59,130,246,0.2);}
+  .sd-cont{background:rgba(16,185,129,0.05);color:#34d399;border-color:var(--cont);border-top:1px solid rgba(16,185,129,0.2);}
+  .row{display:grid;grid-template-columns:200px 220px 1fr 200px 220px 180px;border-bottom:1px solid var(--border);margin:0 20px;background:var(--surface);min-height:160px;transition:background 0.15s;}
+  .row:hover{background:#0e1118;}
+  .row-once{border-left:3px solid var(--once);}
+  .row-sprint{border-left:3px solid var(--sprint);}
+  .row-cont{border-left:3px solid var(--cont);}
+  .phase-cell{padding:14px 12px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:5px;background:rgba(0,0,0,0.15);}
+  .phase-badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:8px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;width:fit-content;}
+  .pb-once{background:rgba(168,85,247,0.15);color:#c084fc;}
+  .pb-sprint{background:rgba(59,130,246,0.15);color:#60a5fa;}
+  .pb-cont{background:rgba(16,185,129,0.15);color:#34d399;}
+  .phase-name{font-size:14px;font-weight:700;color:#fff;line-height:1.3;margin-top:3px;}
+  .phase-agent{font-family:'IBM Plex Mono',monospace;font-size:9px;font-weight:600;margin-top:1px;letter-spacing:0.4px;}
+  .autonomy-bar{display:flex;gap:3px;align-items:center;margin-top:7px;}
+  .abar-dot{width:10px;height:4px;border-radius:2px;background:var(--border2);}
+  .abar-dot.lit{background:currentColor;}
+  .abar-label{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--muted2);margin-left:4px;}
+  .phase-note{font-size:10px;color:var(--muted);margin-top:5px;font-style:italic;line-height:1.4;}
+  .owner-cell{padding:12px 10px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:6px;background:rgba(249,115,22,0.025);}
+  .agent-cell{padding:12px 10px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:6px;}
+  .dev-cell{padding:12px 10px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:6px;background:rgba(139,92,246,0.025);}
+  .out-cell{padding:12px 10px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:6px;}
+  .gate-cell{padding:12px 10px;display:flex;flex-direction:column;gap:6px;background:rgba(245,158,11,0.025);}
+  .card{border-radius:6px;padding:8px 10px;border:1px solid transparent;transition:transform 0.12s,box-shadow 0.12s;}
+  .card:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.4);}
+  .card-title{font-family:'IBM Plex Mono',monospace;font-size:8px;font-weight:600;letter-spacing:0.4px;text-transform:uppercase;margin-bottom:4px;}
+  .card-body{font-size:11px;color:#8896b3;line-height:1.5;}
+  .c-owner{background:var(--owner-dim);border-color:var(--owner-border);}
+  .c-owner .card-title{color:#fb923c;}
+  .c-agent{background:var(--agent-dim);border-color:var(--agent-border);}
+  .c-agent .card-title{color:#60a5fa;}
+  .c-tool{background:var(--tool-dim);border-color:var(--tool-border);}
+  .c-tool .card-title{color:#22d3ee;}
+  .c-out{background:var(--output-dim);border-color:var(--output-border);}
+  .c-out .card-title{color:#34d399;}
+  .c-gate{background:var(--gate-dim);border-color:var(--gate-border);}
+  .c-gate .card-title{color:#fbbf24;}
+  .c-dev{background:var(--dev-dim);border-color:var(--dev-border);}
+  .c-dev .card-title{color:#a78bfa;}
+  .c-nodev{background:rgba(239,68,68,0.05);border:1px dashed rgba(239,68,68,0.2);border-radius:5px;padding:7px 9px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#f87171;text-align:center;}
+  .tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px;}
+  .tag{padding:2px 7px;border-radius:3px;font-family:'IBM Plex Mono',monospace;font-size:9px;}
+  .tg{background:rgba(16,185,129,0.12);color:#6ee7b7;}
+  .tb{background:rgba(59,130,246,0.12);color:#93c5fd;}
+  .tc{background:rgba(6,182,212,0.12);color:#67e8f9;}
+  .live-dot{display:inline-flex;align-items:center;gap:5px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:#60a5fa;margin-top:4px;}
+  .live-dot::before{content:'';width:6px;height:6px;border-radius:50%;background:#3b82f6;animation:blink 2s infinite;display:block;flex-shrink:0;}
+  @keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.3;transform:scale(0.7)}}
+  .retro-row{display:grid;grid-template-columns:200px 1fr;border-bottom:1px solid var(--border);margin:0 20px;background:rgba(59,130,246,0.04);border-left:3px solid var(--sprint);min-height:60px;}
+  .retro-inner{display:flex;align-items:center;gap:10px;padding:10px 14px;flex-wrap:wrap;}
+  .retro-arrow{font-size:18px;color:var(--muted);flex-shrink:0;}
+  .principle-banner{margin:0 20px 4px;padding:8px 16px;background:linear-gradient(90deg,rgba(249,115,22,0.08),rgba(59,130,246,0.04));border:1px solid rgba(249,115,22,0.2);border-radius:6px;display:flex;align-items:center;gap:10px;font-size:11px;color:var(--muted2);}
+  .principle-banner strong{color:#fb923c;}
+  .footer{margin:16px 20px 20px;padding:12px 18px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;display:flex;gap:24px;flex-wrap:wrap;}
+  .fn{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted2);}
+  .fn b{color:var(--owner);}
+</style>
+</head>
+<body>
+
+<div class="top-banner">
+  <div class="banner-left">
+    <h1>AI-Native <span>Salesforce</span> Delivery</h1>
+    <p>ONE PROJECT OWNER · SEVEN AI AGENTS · BACKGROUND-AGNOSTIC EXECUTION · THIN DEV VALIDATION ONLY</p>
+  </div>
+  <div class="owner-insight">
+    <div class="oi-icon">💡</div>
+    <div>
+      <div class="oi-title">The Core Principle</div>
+      <div class="oi-body">There is <strong>one role: Project Owner.</strong> PM, Architect, TL, BA — the background is irrelevant. The Owner provides <strong>intent, judgment, and approvals.</strong> The agents provide <strong>all execution.</strong> A thin developer layer validates code only — they do not write it.</div>
+    </div>
+  </div>
+</div>
+
+<div class="legend-bar">
+  <div class="leg"><div class="leg-dot" style="background:var(--owner)"></div>Project Owner Action</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--agent)"></div>Agent Executes</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--tool)"></div>Tools / AI Stack</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--output)"></div>Output / Artifact</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--gate)"></div>Approval Gate</div>
+  <div class="leg"><div class="leg-dot" style="background:var(--dev)"></div>Thin Dev (Validate Only)</div>
+  <div class="leg" style="margin-left:auto;"><div class="leg-dot" style="background:rgba(168,85,247,0.6);border:1px solid var(--once)"></div>Once-off</div>
+  <div class="leg"><div class="leg-dot" style="background:rgba(59,130,246,0.6);border:1px solid var(--sprint)"></div>Sprint Loop</div>
+  <div class="leg"><div class="leg-dot" style="background:rgba(16,185,129,0.6);border:1px solid var(--cont)"></div>Continuous</div>
+</div>
+
+<div class="orch-bar">
+  <div class="orch-icon">⚙</div>
+  <div class="orch-text">
+    <h3>Orchestration Layer — Always Running</h3>
+    <p>Routes tasks between all agents · Manages state & handoffs · Triggers approval gates · Logs every decision for audit · Project Owner interacts via single dashboard</p>
+  </div>
+  <div class="orch-tags">
+    <span class="otag">CrewAI / LangGraph</span>
+    <span class="otag">Temporal</span>
+    <span class="otag">LangSmith</span>
+    <span class="otag">Jira MCP</span>
+    <span class="otag">GitHub MCP</span>
+    <span class="otag">Slack MCP</span>
+  </div>
+</div>
+
+<div class="principle-banner">
+  <strong>↓ HOW TO READ THIS:</strong>&nbsp; The <strong>orange column</strong> is the only place a human appears — one person, one role, any background. Everything else is agent-executed. The Project Owner provides intent, decisions, and approvals. Agents provide all execution.
+</div>
+
+<div class="scroll-wrap">
+<div class="workflow">
+
+<div class="col-head">
+  <div class="ch">Phase / Agent<br><span style="opacity:0.5">Autonomy Level</span></div>
+  <div class="ch ch-owner">🧑 Project Owner<br><span style="opacity:0.6">Intent · Decisions · Approvals</span></div>
+  <div class="ch ch-agent">🤖 Agent Executes<br><span style="opacity:0.6">All work. All artifacts.</span></div>
+  <div class="ch">🔧 AI Tools Activated<br><span style="opacity:0.5">Per agent stack</span></div>
+  <div class="ch">📦 Output / Artifacts</div>
+  <div class="ch ch-dev">🚦 Gate + Thin Dev Role<br><span style="opacity:0.6">Validate only. Never write.</span></div>
+</div>
+
+<!-- ONCE-OFF -->
+<div class="sec-div sd-once">◆ &nbsp;Once-off — Project Initiation &amp; Discovery (runs once at project start)</div>
+
+<!-- DISCOVERY -->
+<div class="row row-once">
+  <div class="phase-cell">
+    <span class="phase-badge pb-once">Once-off</span>
+    <div class="phase-name">Discovery</div>
+    <div class="phase-agent" style="color:var(--once)">DISCOVERY AGENT</div>
+    <div class="autonomy-bar" style="color:var(--once)"><div class="abar-dot lit"></div><div class="abar-dot lit"></div><div class="abar-dot"></div><span class="abar-label">Guided</span></div>
+    <div class="phase-note">Owner gives context. Agent does all analysis & mapping.</div>
+  </div>
+  <div class="owner-cell">
+    <div class="card c-owner"><div class="card-title">▶ Activate &amp; Brief</div><div class="card-body">Upload requirements doc / RFP. Set project type. Define scope in plain language. Answer agent's clarifying questions — no technical knowledge needed.</div></div>
+    <div class="card c-owner"><div class="card-title">Review &amp; Annotate</div><div class="card-body">Review extracted requirements summary in plain English. Flag gaps. Agent reformats output to match Owner's natural language style (PM narrative or Arch spec — Owner's choice).</div></div>
+  </div>
+  <div class="agent-cell">
+    <div class="card c-agent"><div class="card-title">Executes Fully</div><div class="card-body">Parses all uploaded documents · Extracts functional & non-functional requirements · Maps to Salesforce capability areas · Identifies gaps · Recommends cloud products · Generates rough story list · Creates requirements register · Writes gap analysis</div></div>
+    <div class="live-dot">Feeds Planning + Design agents on gate pass</div>
+  </div>
+  <div class="agent-cell">
+    <div class="card c-tool"><div class="card-title">LLM Core</div><div class="card-body">Claude (primary reasoning) + GPT-4o (doc parsing fallback)</div></div>
+    <div class="card c-tool"><div class="card-title">Document MCP</div><div class="card-body">Confluence · SharePoint · Google Drive MCP connectors</div></div>
+    <div class="card c-tool"><div class="card-title">SF Knowledge RAG</div><div class="card-body">Salesforce Docs · Agentforce APIs · Product capability KB</div></div>
+    <div class="card c-tool"><div class="card-title">Org Scan (Brownfield)</div><div class="card-body">Salesforce CLI · OrgSpy / Metazoa — existing org metadata analysis for migration projects</div></div>
+  </div>
+  <div class="out-cell">
+    <div class="card c-out"><div class="card-title">Artifacts — Auto-generated</div><div class="tags"><span class="tag tg">Requirements Register</span><span class="tag tg">Capability Map</span><span class="tag tg">Gap Analysis</span><span class="tag tg">Cloud Recommendation</span><span class="tag tg">Rough Story List</span></div></div>
+  </div>
+  <div class="gate-cell">
+    <div class="card c-gate"><div class="card-title">🔒 Gate D1</div><div class="card-body">Owner + Client approve Requirements Register & Capability Map. Blocks Planning Agent.</div></div>
+    <div class="c-nodev">No thin dev needed here</div>
+  </div>
+</div>
+
+<!-- UX -->
+<div class="row row-once">
+  <div class="phase-cell">
+    <span class="phase-badge pb-once">Once-off</span>
+    <div class="phase-name">UX Design</div>
+    <div class="phase-agent" style="color:var(--once)">UX AGENT</div>
+    <div class="autonomy-bar" style="color:var(--once)"><div class="abar-dot lit"></div><div class="abar-dot lit"></div><div class="abar-dot"></div><span class="abar-label">Guided</span></div>
+    <div class="phase-note">Owner reviews flows conversationally. No Figma skill needed.</div>
+  </div>
+  <div class="owner-cell">
+    <div class="card c-owner"><div class="card-title">▶ Brief Agent</div><div class="card-body">Confirm personas & goals via chat. Share brand guidelines or existing assets if any. No UX background required — agent asks structured questions Owner can answer naturally.</div></div>
+    <div class="card c-owner"><div class="card-title">Review &amp; Approve</div><div class="card-body">Review wireframes via chat. Annotate by describing changes in plain language ("move the sidebar left"). Agent re-renders based on feedback.</div></div>
+  </div>
+  <div class="agent-cell">
+    <div class="card c-agent"><div class="card-title">Executes Fully</div><div class="card-body">Generates user journey maps · Screen flows per story · Lo-fi wireframes · Lightning component specs · Accessibility annotations · Draft acceptance criteria for all screens</div></div>
+    <div class="live-dot">Attaches wireframes to Jira stories automatically</div>
+  </div>
+  <div class="agent-cell">
+    <div class="card c-tool"><div class="card-title">Wireframe Gen</div><div class="card-body">V0.dev · Figma AI plugin · Galileo AI for screen generation</div></div>
+    <div class="card c-tool"><div class="card-title">LLM + SF UX KB</div><div class="card-body">Claude with Lightning Design System (SLDS) knowledge base — Salesforce-native UX patterns built in</div></div>
+    <div class="card c-tool"><div class="card-title">Jira MCP</div><div class="card-body">Auto-creates stories and attaches wireframe links — every screen mapped to a ticket before sprint planning</div></div>
+  </div>
+  <div class="out-cell">
+    <div class="card c-out"><div class="card-title">Artifacts — Auto-generated</div><div class="tags"><span class="tag tg">Journey Maps</span><span class="tag tg">Screen Wireframes</span><span class="tag tg">Component Specs</span><span class="tag tg">Draft Acceptance Criteria</span></div></div>
+  </div>
+  <div class="gate-cell">
+    <div class="card c-gate"><div class="card-title">🔒 Gate U1</div><div class="card-body">Owner approves wireframes via chat. Agent auto-links wireframes to stories in Jira before planning locks.</div></div>
+    <div class="c-nodev">No thin dev needed here</div>
+  </div>
+</div>
+
+<!-- SOLUTION DESIGN -->
+<div class="row row-once">
+  <div class="phase-cell">
+    <span class="phase-badge pb-once">Once-off</span>
+    <div class="phase-name">Solution Design</div>
+    <div class="phase-agent" style="color:var(--once)">DESIGN AGENT</div>
+    <div class="autonomy-bar" style="color:var(--once)"><div class="abar-dot lit"></div><div class="abar-dot lit"></div><div class="abar-dot"></div><span class="abar-label">Guided</span></div>
+    <div class="phase-note">Highest-stakes gate. Thin dev validates feasibility only.</div>
+  </div>
+  <div class="owner-cell">
+    <div class="card c-owner"><div class="card-title">▶ Set Guardrails</div><div class="card-body">Define principles via guided prompts: declarative-first preference, integration constraints, existing org details. Agent translates Owner intent into technical architecture decisions.</div></div>
+    <div class="card c-owner"><div class="card-title">Review Design Doc</div><div class="card-body">Agent presents TDD in Owner's preferred format — executive summary for a PM, architecture diagram for an Architect. Owner approves intent; thin dev validates feasibility separately.</div></div>
+  </div>
+  <div class="agent-cell">
+    <div class="card c-agent"><div class="card-title">Executes Fully</div><div class="card-body">Designs data model & ERD · Object relationships · Automation blueprint · Integration architecture · Security model · Technical story breakdown with estimates · Architecture Decision Records (ADRs)</div></div>
+    <div class="live-dot">Auto-populates Confluence TDD page + Jira epics</div>
+  </div>
+  <div class="agent-cell">
+    <div class="card c-tool"><div class="card-title">Data Modeling</div><div class="card-body">dbdiagram.io · Mermaid ERD via Claude</div></div>
+    <div class="card c-tool"><div class="card-title">Org Scan (Brownfield)</div><div class="card-body">Salesforce CLI · OrgSpy / Metazoa for existing org analysis</div></div>
+    <div class="card c-tool"><div class="card-title">Diagram Gen</div><div class="card-body">Mermaid.js auto-generated from LLM reasoning</div></div>
+    <div class="card c-tool"><div class="card-title">Confluence MCP</div><div class="card-body">Auto-writes TDD page + ADR sub-pages · Auto-populates Jira epics from tech story breakdown</div></div>
+  </div>
+  <div class="out-cell">
+    <div class="card c-out"><div class="card-title">Artifacts — Auto-generated</div><div class="tags"><span class="tag tg">TDD / Solution Doc</span><span class="tag tg">ERD</span><span class="tag tg">Integration Map</span><span class="tag tg">ADRs</span><span class="tag tg">Tech Backlog</span></div></div>
+  </div>
+  <div class="gate-cell">
+    <div class="card c-gate"><div class="card-title">🔒 Gate S1</div><div class="card-body">Owner approves design intent. Blocks Sprint 1 planning from starting.</div></div>
+    <div class="card c-dev"><div class="card-title">🔬 Thin Dev: Feasibility</div><div class="card-body">Reads generated TDD. Validates technical feasibility only. Flags blockers back to agent for rework. Does NOT rewrite design.</div></div>
+  </div>
+</div>
+
+<!-- SPRINT LOOP -->
+<div class="sec-div sd-sprint">↻ &nbsp;Sprint Loop — Repeats every 2 weeks · Planning Agent is the conductor for each sprint cycle</div>
+
+<!-- PLANNING -->
+<div class="row row-sprint" style="min-height:185px;">
+  <div class="phase-cell">
+    <span class="phase-badge pb-sprint">Sprint Loop</span>
+    <div class="phase-name">Sprint Planning</div>
+    <div class="phase-agent" style="color:var(--agent)">PLANNING AGENT</div>
+    <div class="autonomy-bar" style="color:var(--agent)"><div class="abar-dot lit"></div><div class="abar-dot lit"></div><div class="abar-dot"></div><span class="abar-label">Execute + Approve</span></div>
+    <div class="phase-note">Central conductor. Activates & sequences all sprint agents.</div>
+  </div>
+  <div class="owner-cell">
+    <div class="card c-owner"><div class="card-title">▶ Set Sprint Goal</div><div class="card-body">State sprint goal in plain language. Confirm capacity. Flag any business priority shifts. No Jira skill needed — Owner just talks to the agent.</div></div>
+    <div class="card c-owner"><div class="card-title">One-Click Approve</div><div class="card-body">Review sprint board summary. Adjust priority via plain-text commands. Single approval unlocks Build Agent. Owner sees business impact, not raw tickets.</div></div>
+  </div>
+  <div class="agent-cell">
+    <div class="card c-agent"><div class="card-title">Orchestrates</div><div class="card-body">Pulls stories from backlog · Refines against TDD & wireframes · Breaks epics to tasks · Estimates complexity · Sequences Build + QA agent work · Creates sprint board · Assigns stories · Identifies dependencies</div></div>
+    <div class="live-dot">Context: TDD + Wireframes + Previous sprint velocity + Retro learnings</div>
+  </div>
+  <div class="agent-cell">
+    <div class="card c-tool"><div class="card-title">Work Management</div><div class="card-body">Jira / Azure DevOps via MCP — auto-creates epics, stories, tasks, AC, links</div></div>
+    <div class="card c-tool"><div class="card-title">Estimation</div><div class="card-body">Claude reasoning on complexity + historical velocity RAG from past sprints</div></div>
+  </div>
+  <div class="out-cell">
+    <div class="card c-out"><div class="card-title">Artifacts — Auto-generated</div><div class="tags"><span class="tag tb">Sprint Backlog</span><span class="tag tb">Refined Stories</span><span class="tag tb">Acceptance Criteria</span><span class="tag tb">Task Breakdown</span><span class="tag tb">Sprint Board</span><span class="tag tb">Dependency Map</span></div></div>
+  </div>
+  <div class="gate-cell">
+    <div class="card c-gate"><div class="card-title">🔒 Gate P1</div><div class="card-body">Owner approves sprint backlog. Every story must have AC + wireframe link + design ref. Unlocks Build Agent.</div></div>
+    <div class="c-nodev">No thin dev needed here</div>
+  </div>
+</div>
+
+<!-- BUILD -->
+<div class="row row-sprint" style="min-height:195px;">
+  <div class="phase-cell">
+    <span class="phase-badge pb-sprint">Sprint Loop</span>
+    <div class="phase-name">Build</div>
+    <div class="phase-agent" style="color:var(--agent)">BUILD AGENT</div>
+    <div class="autonomy-bar" style="color:var(--agent)"><div class="abar-dot lit"></div><div class="abar-dot lit"></div><div class="abar-dot lit"></div><span class="abar-label">High Autonomy</span></div>
+    <div class="phase-note">Owner monitors via dashboard. Intervenes only on escalated blockers.</div>
+  </div>
+  <div class="owner-cell">
+    <div class="card c-owner"><div class="card-title">▶ Activate &amp; Monitor</div><div class="card-body">Single button activates Build Agent after Gate P1. Monitor via live dashboard showing build progress, test coverage, blockers. Owner sees build health — not raw code.</div></div>
+    <div class="card c-owner"><div class="card-title">Escalation Decisions</div><div class="card-body">Agent surfaces decisions it cannot make autonomously in plain language ("Should we use Platform Events or CDC here?"). Owner answers naturally. Agent implements.</div></div>
+  </div>
+  <div class="agent-cell">
+    <div class="card c-agent"><div class="card-title">Executes Fully</div><div class="card-body">Generates Apex classes · LWC components · Flows & automation · Config metadata · Validation rules · Writes & runs unit tests · Updates Jira automatically · Creates PRs · Self-reviews with PMD · Iterates on failures autonomously</div></div>
+    <div class="live-dot">Auto-provisions scratch org per story · Commits per task</div>
+  </div>
+  <div class="agent-cell">
+    <div class="card c-tool"><div class="card-title">Code Generation</div><div class="card-body">Claude Code · Cursor (Apex + LWC specialist modes)</div></div>
+    <div class="card c-tool"><div class="card-title">Version Control</div><div class="card-body">GitHub / GitLab + Salesforce CLI (sfdx) · Auto-PR creation</div></div>
+    <div class="card c-tool"><div class="card-title">Static Analysis</div><div class="card-body">PMD Apex rules · ESLint LWC · Runs on every commit automatically</div></div>
+    <div class="card c-tool"><div class="card-title">CI Pipeline</div><div class="card-body">GitHub Actions — runs on every PR: unit tests, PMD, deploy validation to scratch org, coverage check</div></div>
+    <div class="card c-tool"><div class="card-title">Scratch Orgs</div><div class="card-body">SF Dev Hub · Auto-provisioned per story · Torn down post-merge</div></div>
+  </div>
+  <div class="out-cell">
+    <div class="card c-out"><div class="card-title">Artifacts — Auto-generated</div><div class="tags"><span class="tag tb">Apex / LWC</span><span class="tag tb">Metadata XML</span><span class="tag tb">Flows</span><span class="tag tb">Unit Tests ≥75%</span><span class="tag tb">Open PRs</span><span class="tag tb">Jira Updated</span><span class="tag tb">PMD Report</span></div></div>
+  </div>
+  <div class="gate-cell">
+    <div class="card c-gate"><div class="card-title">🔒 Gate B1</div><div class="card-body">Coverage ≥75% · PMD pass · CI pipeline green. Auto-triggers QA Agent on pass.</div></div>
+    <div class="card c-dev"><div class="card-title">🔬 Thin Dev: PR Review</div><div class="card-body">Reviews all generated PRs for quality & risk. Approves or requests changes via PR comments — agent auto-addresses and re-submits. Thin dev does NOT rewrite code.</div></div>
+  </div>
+</div>
+
+<!-- QA -->
+<div class="row row-sprint" style="min-height:185px;">
+  <div class="phase-cell">
+    <span class="phase-badge pb-sprint">Sprint Loop</span>
+    <div class="phase-name">QA &amp; Testing</div>
+    <div class="phase-agent" style="color:var(--agent)">QA AGENT</div>
+    <div class="autonomy-bar" style="color:var(--agent)"><div class="abar-dot lit"></div><div class="abar-dot lit"></div><div class="abar-dot lit"></div><span class="abar-label">Mostly Auto</span></div>
+    <div class="phase-note">Owner triages defect decisions. Agent fixes and re-tests autonomously.</div>
+  </div>
+  <div class="owner-cell">
+    <div class="card c-owner"><div class="card-title">▶ Set Pass Thresholds</div><div class="card-body">Define pass rate & coverage targets via guided setup. Mark high-risk stories for extra coverage in business terms — agent translates to test depth automatically.</div></div>
+    <div class="card c-owner"><div class="card-title">Defect Triage</div><div class="card-body">Review QA dashboard in plain English. Decide: fix this sprint vs next vs accept risk. Owner makes the call; agent implements and re-runs affected tests.</div></div>
+  </div>
+  <div class="agent-cell">
+    <div class="card c-agent"><div class="card-title">Executes Fully</div><div class="card-body">Generates test cases from AC · Runs full functional test suite · Runs regression suite · Logs bugs in Jira automatically · Auto-retests after Build Agent fixes · Builds traceability matrix · Generates QA summary report</div></div>
+    <div class="live-dot">Auto-loops with Build Agent on defect fix cycles</div>
+  </div>
+  <div class="agent-cell">
+    <div class="card c-tool"><div class="card-title">SF-Native Test Automation</div><div class="card-body">Provar / TestIM — Salesforce-specific UI & functional test generation</div></div>
+    <div class="card c-tool"><div class="card-title">Test Case Generation</div><div class="card-body">Claude generates test cases from Acceptance Criteria automatically</div></div>
+    <div class="card c-tool"><div class="card-title">Defect Management</div><div class="card-body">Jira MCP — auto-creates bug tickets with steps, screenshots, env details</div></div>
+  </div>
+  <div class="out-cell">
+    <div class="card c-out"><div class="card-title">Artifacts — Auto-generated</div><div class="tags"><span class="tag tb">Test Plan</span><span class="tag tb">Test Cases</span><span class="tag tb">Defect Log</span><span class="tag tb">QA Report</span><span class="tag tb">Traceability Matrix</span><span class="tag tb">Regression Suite++</span></div></div>
+  </div>
+  <div class="gate-cell">
+    <div class="card c-gate"><div class="card-title">🔒 Gate Q1</div><div class="card-body">Zero P1/P2 open. Pass rate ≥95%. Owner approves before Deploy Agent activates.</div></div>
+    <div class="card c-dev"><div class="card-title">🔬 Thin Dev: L3 Defect Only</div><div class="card-body">Called in only if Build Agent cannot resolve a defect after 2 autonomous retry cycles. Provides root cause diagnosis — agent implements the fix.</div></div>
+  </div>
+</div>
+
+<!-- DEPLOYMENT -->
+<div class="row row-sprint" style="min-height:185px;">
+  <div class="phase-cell">
+    <span class="phase-badge pb-sprint">Sprint Loop</span>
+    <div class="phase-name">Deployment</div>
+    <div class="phase-agent" style="color:var(--agent)">DEPLOY AGENT</div>
+    <div class="autonomy-bar" style="color:var(--agent)"><div class="abar-dot lit"></div><div class="abar-dot lit"></div><div class="abar-dot"></div><span class="abar-label">Execute + Approve</span></div>
+    <div class="phase-note">UAT → Production. 2-person approval for Prod only.</div>
+  </div>
+  <div class="owner-cell">
+    <div class="card c-owner"><div class="card-title">▶ Approve Release</div><div class="card-body">Review plain-English deployment plan & change summary. One-click push to UAT. No CLI or DevOps knowledge needed — Owner sees what's changing in business terms, not metadata diffs.</div></div>
+    <div class="card c-owner"><div class="card-title">Production Sign-off</div><div class="card-body">Final 2-person approval before Prod push (Owner + Client). Watch deployment health dashboard. Confirm rollback or accept if anomaly detected — agent executes.</div></div>
+  </div>
+  <div class="agent-cell">
+    <div class="card c-agent"><div class="card-title">Executes Fully</div><div class="card-body">Builds deployment package · Validates against target org · Deploys to UAT · Runs smoke tests · Awaits Owner UAT gate · Deploys to Prod · Post-deploy validation · Generates release notes · Monitors health for 15 min post-deploy</div></div>
+    <div class="live-dot">Auto-rollback if health check fails within 15 min</div>
+  </div>
+  <div class="agent-cell">
+    <div class="card c-tool"><div class="card-title">SF Release Mgmt</div><div class="card-body">Copado / Gearset — Salesforce-native CI/CD with org comparison</div></div>
+    <div class="card c-tool"><div class="card-title">CI/CD Pipeline</div><div class="card-body">GitHub Actions + Salesforce CLI deploy commands</div></div>
+    <div class="card c-tool"><div class="card-title">Post-Deploy Monitoring</div><div class="card-body">SF Event Monitoring · Splunk / Datadog integration for anomaly detection</div></div>
+  </div>
+  <div class="out-cell">
+    <div class="card c-out"><div class="card-title">Artifacts — Auto-generated</div><div class="tags"><span class="tag tb">Deployment Package</span><span class="tag tb">Change Log</span><span class="tag tb">Release Notes</span><span class="tag tb">Smoke Test Results</span><span class="tag tb">Rollback Plan</span><span class="tag tb">Health Report</span></div></div>
+  </div>
+  <div class="gate-cell">
+    <div class="card c-gate"><div class="card-title">🔒 Gate D2</div><div class="card-body">UAT: Owner + Client sign-off. Production: 2-person approval. Auto-rollback if health check fails within 15 min post-deploy.</div></div>
+    <div class="card c-dev"><div class="card-title">🔬 Thin Dev: Prod Incident</div><div class="card-body">On-call only if rollback is insufficient and production incident requires diagnosis. Provides root cause — agent deploys the fix.</div></div>
+  </div>
+</div>
+
+<!-- RETRO -->
+<div class="retro-row">
+  <div class="phase-cell" style="justify-content:center;">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:9px;color:#60a5fa;font-weight:600;">↻ SPRINT END</div>
+    <div style="font-size:11px;font-weight:700;margin-top:2px;">Retro + Loop</div>
+  </div>
+  <div class="retro-inner">
+    <div class="card c-owner" style="flex:1;min-width:200px;padding:8px 12px;"><div class="card-title">Owner Runs Retro</div><div class="card-body">Adds qualitative notes. Flags process changes. Approves autonomy level adjustments for next sprint.</div></div>
+    <div class="retro-arrow">→</div>
+    <div class="card c-agent" style="flex:1;min-width:200px;padding:8px 12px;"><div class="card-title">Planning Agent Reactivates</div><div class="card-body">Auto-generates sprint summary: velocity, quality metrics, defect trends. Applies retro learnings to next estimates. Sprint cycle restarts at Gate P1.</div></div>
+    <div class="retro-arrow">→</div>
+    <div class="card c-gate" style="flex:1;min-width:160px;padding:8px 12px;"><div class="card-title">Support Agent Feeds Back</div><div class="card-body">Post-deploy incidents & patterns become backlog candidates for next sprint — automatically.</div></div>
+  </div>
+</div>
+
+<!-- CONTINUOUS -->
+<div class="sec-div sd-cont">◈ &nbsp;Continuous — Post Go-Live Operations</div>
+
+<!-- SUPPORT -->
+<div class="row row-cont">
+  <div class="phase-cell">
+    <span class="phase-badge pb-cont">Continuous</span>
+    <div class="phase-name">Support &amp; Ops</div>
+    <div class="phase-agent" style="color:var(--cont)">SUPPORT AGENT</div>
+    <div class="autonomy-bar" style="color:var(--cont)"><div class="abar-dot lit"></div><div class="abar-dot lit"></div><div class="abar-dot lit"></div><span class="abar-label">High Autonomy</span></div>
+    <div class="phase-note">Owner reviews weekly trends. P1s escalate to Owner immediately.</div>
+  </div>
+  <div class="owner-cell">
+    <div class="card c-owner"><div class="card-title">▶ Configure SLAs</div><div class="card-body">Set escalation thresholds & channels via guided setup. Define what auto-resolves vs. escalates to Owner. No ServiceNow or platform knowledge required.</div></div>
+    <div class="card c-owner"><div class="card-title">Weekly Pattern Review</div><div class="card-body">Review support trend dashboard in plain English. Decide which incident patterns become backlog stories. Owner judges business impact; agent sizes the work.</div></div>
+  </div>
+  <div class="agent-cell">
+    <div class="card c-agent"><div class="card-title">Manages Fully</div><div class="card-body">Monitors org health continuously · Triages incoming incidents · Auto-resolves L1 issues · Files L2/L3 bug reports · Maintains knowledge base · Detects recurring patterns · Feeds incident trends to Planning Agent as backlog candidates</div></div>
+    <div class="live-dot">Always-on · Feeds Planning Agent continuously</div>
+  </div>
+  <div class="agent-cell">
+    <div class="card c-tool"><div class="card-title">SF-Native</div><div class="card-body">Agentforce · Einstein Bots · Service Cloud for L1 auto-resolution</div></div>
+    <div class="card c-tool"><div class="card-title">Org Monitoring</div><div class="card-body">SF Event Monitoring · Shield · Health Check API · Governor Limit alerts</div></div>
+    <div class="card c-tool"><div class="card-title">Ticketing</div><div class="card-body">Jira Service Management / ServiceNow MCP integration</div></div>
+  </div>
+  <div class="out-cell">
+    <div class="card c-out"><div class="card-title">Artifacts — Auto-generated</div><div class="tags"><span class="tag tg">Incident Log</span><span class="tag tg">Org Health Report</span><span class="tag tg">KB Articles</span><span class="tag tg">Backlog Candidates</span><span class="tag tg">SLA Dashboard</span><span class="tag tg">Pattern Analysis</span></div></div>
+  </div>
+  <div class="gate-cell">
+    <div class="card c-gate"><div class="card-title">🔒 Gate SU1</div><div class="card-body">P1 incidents always escalate to Owner immediately. Pattern analysis reviewed weekly before adding to sprint backlog.</div></div>
+    <div class="card c-dev"><div class="card-title">🔬 Thin Dev: L3 Only</div><div class="card-body">Engaged on L3 incidents the agent cannot diagnose. Provides root cause — agent patches and deploys fix. SLA: 4hr response.</div></div>
+  </div>
+</div>
+
+</div>
+</div>
+
+<div class="footer">
+  <div class="fn"><b>GATE SEQUENCE:</b> D1 → U1 → S1 (once-off) · Per sprint: P1 → B1 → Q1 → D2 · SU1 (continuous)</div>
+  <div class="fn"><b>ONE OWNER RULE:</b> One person runs the entire project. Background is irrelevant — PM, Architect, TL all take the same actions through the same interface.</div>
+  <div class="fn"><b>THIN DEV RULE:</b> Validates only. Never initiates work. Never writes code. Engaged at Gates S1, B1 (PR review), Q1 (L3 defect), D2 (Prod incident), SU1 (L3 ops) only.</div>
+  <div class="fn"><b>AUTONOMY:</b> Guided → Execute+Approve → High Autonomy. Set per agent per project complexity at kickoff.</div>
+</div>
+
+</body>
+</html>
